@@ -2,11 +2,11 @@
 
 Мета:  Створення бази даних шляхом визначення схеми БД та заповнення її тестовими даними  Навчитися проектувати бази даних, вводити і редагувати структуру таблиць та дані в таблицях  Вивчити DDL-команди SQL для роботи з таблицями (створення, модифікації та видалення таблиць)  Вивчити використовувані в SQL засоби для підтримки цілісності даних та їх практичне застосування Вивчити основні принципи керування обліковими записами та ролями 
 
-I) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
+I)  Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
 
 II) Розробити SQL-скрипти для:
 
-    a) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
+    a)  Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
 
     	1)  Створення бази даних:
 
@@ -141,7 +141,7 @@ II) Розробити SQL-скрипти для:
                 | WarehouseID        | int unsigned | NO   | MUL | NULL    |                |
                 +--------------------+--------------+------+-----+---------+----------------+
 
-        8)  Створення Order:
+        8)  Створення Orders:
             
             CREATE TABLE Orders (
                 OrdersID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
@@ -149,8 +149,8 @@ II) Розробити SQL-скрипти для:
                 DoctorCode INT UNSIGNED NOT NULL,
                 TypeOfUse VARCHAR(40) NOT NULL,
                 PacientFullName VARCHAR(40) NOT NULL,
-                PacientAge TINYINT NOT NULL,
-                NumberOfMedicine TINYINT NOT NULL,
+                PacientAge TINYINT UNSIGNED NOT NULL,
+                NumberOfMedicine SMALLINT UNSIGNED NOT NULL,
                 PreparationDate DATETIME NOT NULL,
                 Price FLOAT(8, 2) UNSIGNED NOT NULL,
                 CONSTRAINT OrdersID PRIMARY KEY (OrdersID)
@@ -159,19 +159,19 @@ II) Розробити SQL-скрипти для:
             Результат:
 
                DESCRIBE Orders;
-                +------------------+---------------------+------+-----+---------+----------------+
-| Field            | Type                | Null | Key | Default | Extra          |
-+------------------+---------------------+------+-----+---------+----------------+
-| OrdersID         | int unsigned        | NO   | PRI | NULL    | auto_increment |
-| DoctorFullName   | varchar(40)         | NO   |     | NULL    |                |
-| DoctorCode       | int unsigned        | NO   |     | NULL    |                |
-| TypeOfUse        | varchar(40)         | NO   |     | NULL    |                |
-| PacientFullName  | varchar(40)         | NO   |     | NULL    |                |
-| PacientAge       | tinyint             | NO   |     | NULL    |                |
-| NumberOfMedicine | tinyint             | NO   |     | NULL    |                |
-| PreparationDate  | datetime            | NO   |     | NULL    |                |
-| Price            | float(8,2) unsigned | NO   |     | NULL    |                |
-+------------------+---------------------+------+-----+---------+----------------+
+               +------------------+---------------------+------+-----+---------+----------------+
+               | Field            | Type                | Null | Key | Default | Extra          |
+               +------------------+---------------------+------+-----+---------+----------------+
+               | OrdersID         | int unsigned        | NO   | PRI | NULL    | auto_increment |
+               | DoctorFullName   | varchar(40)         | NO   |     | NULL    |                |
+               | DoctorCode       | int unsigned        | NO   |     | NULL    |                |
+               | TypeOfUse        | varchar(40)         | NO   |     | NULL    |                |
+               | PacientFullName  | varchar(40)         | NO   |     | NULL    |                |
+               | PacientAge       | tinyint unsigned    | NO   |     | NULL    |                |
+               | NumberOfMedicine | smallint unsigned   | NO   |     | NULL    |                |
+               | PreparationDate  | datetime            | NO   |     | NULL    |                |
+               | Price            | float(8,2) unsigned | NO   |     | NULL    |                |
+               +------------------+---------------------+------+-----+---------+----------------+
 
         9)  Створення OrdersMedicine:
 
@@ -213,7 +213,7 @@ II) Розробити SQL-скрипти для:
             | WarehouseRequest |
             +------------------+
 
-    b) зміни в структурах таблиць, обмежень засобами мови SQL (до 10 
+    b)  зміни в структурах таблиць, обмежень засобами мови SQL (до 10 
 різних за суттю запитів для декількох таблиць):
 
         1)  ALTER TABLE Warehouse MODIFY Name VARCHAR(50);
@@ -294,15 +294,110 @@ II) Розробити SQL-скрипти для:
                 | PreparationID    | int unsigned | NO   | MUL | NULL    |                |
                 +------------------+--------------+------+-----+---------+----------------+
 
-        4)  ALTER TABLE Orders ADD CONSTRAINT MAX_PacientAge CHECK (PacientAge < 160);
+        4)  ALTER TABLE Orders ADD CONSTRAINT MAXPacientAge CHECK (PacientAge < 160);
 
             Було:
 
-                
+                INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 200, 1, '2022-10-22 14:00:00', 180.56);
+
+                Результат:
+
+                    Query OK, 1 row affected (0.02 sec)
 
             Стало:
 
-    III) Згенерувати схему даних засобами СУБД:
+                DELETE FROM Orders WHERE PacientAge = 200;
+                INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 200, 1, '2022-10-22 14:00:00', 180.56);
+
+                Результат:
+
+                    ERROR 3819 (HY000): Check constraint 'MAXPacientAge' is violated.
+
+    c)  видалення окремих елементів таблиць/обмежень або самих таблиць 
+засобами мови SQL (до 10 різних за суттю команд):
+        
+        1)  ALTER TABLE Warehouse REMOVE COLUMN DummyInformation;
+            
+            Було:
+
+                DESCRIBE Warehouse;
+                +------------------+--------------+------+-----+---------+----------------+
+                | Field            | Type         | Null | Key | Default | Extra          |
+                +------------------+--------------+------+-----+---------+----------------+
+                | WarehouseID      | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name             | varchar(50)  | YES  |     | NULL    |                |
+                | DummyInformation | varchar(50)  | YES  |     | NULL    |                |
+                +------------------+--------------+------+-----+---------+----------------+
+
+            Стало:
+
+                DESCRIBE Warehouse;
+                +-------------+--------------+------+-----+---------+----------------+
+                | Field       | Type         | Null | Key | Default | Extra          |
+                +-------------+--------------+------+-----+---------+----------------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name        | varchar(50)  | YES  |     | NULL    |                |
+                +-------------+--------------+------+-----+---------+----------------+
+
+        2)  DROP TABLE OrdersMedicine;
+
+            Було:
+
+                SHOW TABLES;
+                +------------------+
+                | Tables_in_LabTwo |
+                +------------------+
+                | Medicine         |
+                | Orders           |
+                | OrdersMedicine   |
+                | PreparationType  |
+                | Storage          |
+                | StorageMedicine  |
+                | Warehouse        |
+                | WarehouseRequest |
+                +------------------+
+
+            Стало:
+
+                SHOW TABLES;
+                +------------------+
+                | Tables_in_LabTwo |
+                +------------------+
+                | Medicine         |
+                | Orders           |
+                | PreparationType  |
+                | Storage          |
+                | StorageMedicine  |
+                | Warehouse        |
+                | WarehouseRequest |
+                +------------------+
+
+
+        3)  ALTER TABLE Orders DROP CONSTRAINT MAXPacientAge;
+
+            Було:
+
+                INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 200, 1, '2022-10-22 14:00:00', 180.56);
+
+                Результат:
+
+                    ERROR 3819 (HY000): Check constraint 'MAXPacientAge' is violated.
+
+            Стало:
+
+                INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 200, 1, '2022-10-22 14:00:00', 180.56);
+
+                Результат:
+
+                    Query OK, 1 row affected (0.02 sec)
+               
+    d)  Зв!язки встановлені при створені самих таблиць у пункті (a)
+
+    e)  визначити декілька (2-3) типів користувачів, котрі будуть працювати з базою даних. Для кожного користувача визначити набір привілеїв, котрі він буде мати:
+
+            1) 
+
+    IV) Згенерувати схему даних засобами СУБД:
 
         1)  INSERT INTO PreparationType (Name) VALUES ("Carbonization");
             INSERT INTO PreparationType (Name) VALUES ("High Pressure");
