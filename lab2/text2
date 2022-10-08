@@ -12,17 +12,17 @@
 	2) Створення PreparationType:
 
 		CREATE TABLE PreparationType (
-		   	PreparationID INT UNSIGNED,
-		    Name VARCHAR(40),
+		   	PreparationID INT UNSIGNED NOT NULL UNIQUE,
+		    Name VARCHAR(40) NOT NULL,
 		    CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
 		  );
 
 	3) Створення Medicine:
 
         CREATE TABLE Medicine ( 
-            MedicineID INT UNSIGNED,
-            Name VARCHAR(40),
-            PreparationID INT UNSIGNED,
+            MedicineID INT UNSIGNED NOT NULL UNIQUE,
+            Name VARCHAR(40) NOT NULL,
+            PreparationID INT UNSIGNED NOT NULL UNIQUE,
             CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
             CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
         );
@@ -30,9 +30,9 @@
 	4) Створення MedicineOrderStatistic:
 
         CREATE TABLE MedicineOrderStaticstic (
-            MedicineOrderStatisticID INT UNSIGNED,
-            TotalBought INT UNSIGNED,
-            MedicineID INT UNSIGNED,
+            MedicineOrderStatisticID INT UNSIGNED NOT NULL UNIQUE,
+            TotalBought INT UNSIGNED NOT NULL,
+            MedicineID INT UNSIGNED NOT NULL UNIQUE,
             CONSTRAINT MedicineOrderStatisticID PRIMARY KEY (MedicineOrderStatisticID),
                 CONSTRAINT MedicineOrderStaticsticForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
         );
@@ -40,19 +40,19 @@
     5) Створення Storage:
 
         CREATE TABLE Storage (
-            StorageID INT UNSIGNED,
-            Name VARCHAR(40),
+            StorageID INT UNSIGNED NOT NULL UNIQUE,
+            Name VARCHAR(40) NOT NULL,
             CONSTRAINT StorageID PRIMARY KEY (StorageID)
         );
 
     6) Створення StoregeMedicine:
 
         CREATE TABLE StoregeMedicine (
-            StoregeMedicineID INT UNSIGNED,
-            CreticalQuantity INT UNSIGNED,
-            TotalQuantity INT UNSIGNED,
-            StorageID INT UNSIGNED,
-            MedicineID INT UNSIGNED,
+            StoregeMedicineID INT UNSIGNED NOT NULL UNIQUE,
+            CreticalQuantity INT UNSIGNED NOT NULL,
+            TotalQuantity INT UNSIGNED NOT NULL,
+            StorageID INT UNSIGNED NOT NULL UNIQUE,
+            MedicineID INT UNSIGNED NOT NULL UNIQUE,
             CONSTRAINT StoregeMedicineID PRIMARY KEY (StoregeMedicineID),
             CONSTRAINT StoregeMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE RESTRICT ON UPDATE RESTRICT,
             CONSTRAINT StoregeMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -61,24 +61,58 @@
     7) Створення Warehouse:
         
         CREATE TABLE Warehouse (
-            WarehouseID INT UNSIGNED,
-            Name VARCHAR(40),
+            WarehouseID INT UNSIGNED NOT NULL UNIQUE,
+            Name VARCHAR(40) NOT NULL,
             CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
         );
 
     8) Створення WarehouseRequest:
         
         CREATE TABLE WarehouseRequest (
-            WarehouseRequestID INT UNSIGNED,
-            MedicineID INT UNSIGNED,
-            StorageID INT UNSIGNED,
-            WarehouseID INT UNSIGNED,
+            WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE,
+            MedicineID INT UNSIGNED NOT NULL UNIQUE,
+            StorageID INT UNSIGNED NOT NULL UNIQUE,
+            WarehouseID INT UNSIGNED NOT NULL UNIQUE,
             CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
-            CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT oN UPDATE RESTRICT,
-            CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY
-
+            CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+            CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+            CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE RESTRICT ON UPDATE RESTRICT
         );
 
+    9) Створення ReservedMedicine:
+
+        CREATE TABLE ReservedMedicine (
+            ReservedMedicineID INT UNSIGNED NOT NULL UNIQUE,
+            MedicineID INT UNSIGNED NOT NULL UNIQUE,
+            CONSTRAINT ReservedMedicineID PRIMARY KEY (ReservedMedicineID),
+            CONSTRAINT ReservedMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
+        );
+
+    10) Створення Receipt:
+
+        CREATE TABLE Receipt (
+            ReceiptID INT UNSIGNED NOT NULL UNIQUE,
+            DoctorFullName VARCHAR(40) NOT NULL,
+            DoctorSignature TINYBLOB NOT NULL,
+            TypeOfUse VARCHAR(40) NOT NULL,
+            PacientFullName VARCHAR(40) NOT NULL,
+            PacientAge TINYINT NOT NULL,
+            NumberOfMedicine TINYINT NOT NULL,
+            CONSTRAINT ReceiptID PRIMARY KEY (ReceiptID)
+        );
+
+    11) Створення Orders:
+        
+        CREATE TABLE Orders (
+            OrderID INT UNSIGNED NOT NULL UNIQUE,
+            IsOrederFulfilled BOOL NOT NULL,
+            Price INT UNSIGNED NOT NULL,
+            ReservedMedicineID INT UNSIGNED NOT NULL UNIQUE,
+            ReceiptID INT UNSIGNED NOT NULL UNIQUE,
+            CONSTRAINT OrderID PRIMARY KEY (OrderID),
+            CONSTRAINT OrdersForeignReservedMedicine FOREIGN KEY (ReservedMedicineID) REFERENCES ReservedMedicine (ReservedMedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+            CONSTRAINT OrdersForeignReceipt FOREIGN KEY (ReceiptID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT  
+        );
 
 
 
