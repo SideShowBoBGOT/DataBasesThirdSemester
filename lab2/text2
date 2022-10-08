@@ -2,118 +2,234 @@
 
 Мета:  Створення бази даних шляхом визначення схеми БД та заповнення її тестовими даними  Навчитися проектувати бази даних, вводити і редагувати структуру таблиць та дані в таблицях  Вивчити DDL-команди SQL для роботи з таблицями (створення, модифікації та видалення таблиць)  Вивчити використовувані в SQL засоби для підтримки цілісності даних та їх практичне застосування Вивчити основні принципи керування обліковими записами та ролями 
 
-а) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю
+I) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
 
-	1) Створення бази даних:
+II) Розробити SQL-скрипти для:
 
-		CREATE DATABASE LabTwo;
-		USE LabTwo;
+    a) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
 
-	2) Створення PreparationType:
+    	1) Створення бази даних:
 
-		CREATE TABLE PreparationType (
-		   	PreparationID INT UNSIGNED NOT NULL UNIQUE,
-		    Name VARCHAR(40) NOT NULL,
-		    CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
-		  );
+    		CREATE DATABASE LabTwo;
+    		USE LabTwo;
 
-	3) Створення Medicine:
+    	2) Створення PreparationType:
 
-        CREATE TABLE Medicine ( 
-            MedicineID INT UNSIGNED NOT NULL UNIQUE,
-            Name VARCHAR(40) NOT NULL,
-            PreparationID INT UNSIGNED NOT NULL UNIQUE,
-            CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
-            CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
-        );
+            CREATE TABLE PreparationType (
+                PreparationID INT UNSIGNED NOT NULL UNIQUE,
+                Name VARCHAR(40) NOT NULL,
+                CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
+            );
 
-	4) Створення MedicineOrderStatistic:
+            Результат:
 
-        CREATE TABLE MedicineOrderStaticstic (
-            MedicineOrderStatisticID INT UNSIGNED NOT NULL UNIQUE,
-            TotalBought INT UNSIGNED NOT NULL,
-            MedicineID INT UNSIGNED NOT NULL UNIQUE,
-            CONSTRAINT MedicineOrderStatisticID PRIMARY KEY (MedicineOrderStatisticID),
-                CONSTRAINT MedicineOrderStaticsticForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
-        );
+                DESCRIBE PreparationType;
+                +---------------+--------------+------+-----+---------+-------+
+                | Field         | Type         | Null | Key | Default | Extra |
+                +---------------+--------------+------+-----+---------+-------+
+                | PreparationID | int unsigned | NO   | PRI | NULL    |       |
+                | Name          | varchar(40)  | NO   |     | NULL    |       |
+                +---------------+--------------+------+-----+---------+-------+
 
-    5) Створення Storage:
+    	3) Створення Medicine:
 
-        CREATE TABLE Storage (
-            StorageID INT UNSIGNED NOT NULL UNIQUE,
-            Name VARCHAR(40) NOT NULL,
-            CONSTRAINT StorageID PRIMARY KEY (StorageID)
-        );
+            CREATE TABLE Medicine ( 
+                MedicineID INT UNSIGNED NOT NULL UNIQUE,
+                Name VARCHAR(40) NOT NULL,
+                TotalBought INT UNSIGNED,
+                TotalQuantity INT UNSIGNED NOT NULL,
+                CriticalQuantity INT UNSIGNED NOT NULL,
+                PreparationID INT UNSIGNED NOT NULL UNIQUE,
+                CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
+                CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
+            );
 
-    6) Створення StoregeMedicine:
+            Результат:
 
-        CREATE TABLE StoregeMedicine (
-            StoregeMedicineID INT UNSIGNED NOT NULL UNIQUE,
-            CreticalQuantity INT UNSIGNED NOT NULL,
-            TotalQuantity INT UNSIGNED NOT NULL,
-            StorageID INT UNSIGNED NOT NULL UNIQUE,
-            MedicineID INT UNSIGNED NOT NULL UNIQUE,
-            CONSTRAINT StoregeMedicineID PRIMARY KEY (StoregeMedicineID),
-            CONSTRAINT StoregeMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE RESTRICT ON UPDATE RESTRICT,
-            CONSTRAINT StoregeMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
-        );
+                DESCRIBE Medicine;
+                    +------------------+--------------+------+-----+---------+-------+
+                    | Field            | Type         | Null | Key | Default | Extra |
+                    +------------------+--------------+------+-----+---------+-------+
+                    | MedicineID       | int unsigned | NO   | PRI | NULL    |       |
+                    | Name             | varchar(40)  | NO   |     | NULL    |       |
+                    | TotalBought      | int unsigned | YES  |     | NULL    |       |
+                    | TotalQuantity    | int unsigned | NO   |     | NULL    |       |
+                    | CriticalQuantity | int unsigned | NO   |     | NULL    |       |
+                    | PreparationID    | int unsigned | NO   | UNI | NULL    |       |
+                    +------------------+--------------+------+-----+---------+-------+
 
-    7) Створення Warehouse:
-        
-        CREATE TABLE Warehouse (
-            WarehouseID INT UNSIGNED NOT NULL UNIQUE,
-            Name VARCHAR(40) NOT NULL,
-            CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
-        );
+        4) Створення Storage:
 
-    8) Створення WarehouseRequest:
-        
-        CREATE TABLE WarehouseRequest (
-            WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE,
-            MedicineID INT UNSIGNED NOT NULL UNIQUE,
-            StorageID INT UNSIGNED NOT NULL UNIQUE,
-            WarehouseID INT UNSIGNED NOT NULL UNIQUE,
-            CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
-            CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT,
-            CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE RESTRICT ON UPDATE RESTRICT,
-            CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE RESTRICT ON UPDATE RESTRICT
-        );
+            CREATE TABLE Storage (
+                StorageID INT UNSIGNED NOT NULL UNIQUE,
+                Name VARCHAR(40) NOT NULL,
+                CONSTRAINT StorageID PRIMARY KEY (StorageID)
+            );
 
-    9) Створення ReservedMedicine:
+            Результат:
 
-        CREATE TABLE ReservedMedicine (
-            ReservedMedicineID INT UNSIGNED NOT NULL UNIQUE,
-            MedicineID INT UNSIGNED NOT NULL UNIQUE,
-            CONSTRAINT ReservedMedicineID PRIMARY KEY (ReservedMedicineID),
-            CONSTRAINT ReservedMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
-        );
+                DESCRIBE Storage;
+                +-----------+--------------+------+-----+---------+-------+
+                | Field     | Type         | Null | Key | Default | Extra |
+                +-----------+--------------+------+-----+---------+-------+
+                | StorageID | int unsigned | NO   | PRI | NULL    |       |
+                | Name      | varchar(40)  | NO   |     | NULL    |       |
+                +-----------+--------------+------+-----+---------+-------+
 
-    10) Створення Receipt:
+        5) Створення StorageMedicine:
 
-        CREATE TABLE Receipt (
-            ReceiptID INT UNSIGNED NOT NULL UNIQUE,
-            DoctorFullName VARCHAR(40) NOT NULL,
-            DoctorSignature TINYBLOB NOT NULL,
-            TypeOfUse VARCHAR(40) NOT NULL,
-            PacientFullName VARCHAR(40) NOT NULL,
-            PacientAge TINYINT NOT NULL,
-            NumberOfMedicine TINYINT NOT NULL,
-            CONSTRAINT ReceiptID PRIMARY KEY (ReceiptID)
-        );
+            CREATE TABLE StorageMedicine (
+                StorageMedicineID INT UNSIGNED NOT NULL UNIQUE,
+                
+                StorageID INT UNSIGNED NOT NULL UNIQUE,
+                MedicineID INT UNSIGNED NOT NULL UNIQUE,
+                CONSTRAINT StorageMedicineID PRIMARY KEY (StorageMedicineID),
+                CONSTRAINT StorageMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT StorageMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+            );
 
-    11) Створення Orders:
-        
-        CREATE TABLE Orders (
-            OrderID INT UNSIGNED NOT NULL UNIQUE,
-            IsOrederFulfilled BOOL NOT NULL,
-            Price INT UNSIGNED NOT NULL,
-            ReservedMedicineID INT UNSIGNED NOT NULL UNIQUE,
-            ReceiptID INT UNSIGNED NOT NULL UNIQUE,
-            CONSTRAINT OrderID PRIMARY KEY (OrderID),
-            CONSTRAINT OrdersForeignReservedMedicine FOREIGN KEY (ReservedMedicineID) REFERENCES ReservedMedicine (ReservedMedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT,
-            CONSTRAINT OrdersForeignReceipt FOREIGN KEY (ReceiptID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT  
-        );
+            Результат:
 
+            Describe StorageMedicine;
+                +-------------------+--------------+------+-----+---------+-------+
+                | Field             | Type         | Null | Key | Default | Extra |
+                +-------------------+--------------+------+-----+---------+-------+
+                | StorageMedicineID | int unsigned | NO   | PRI | NULL    |       |
+                | StorageID         | int unsigned | NO   | UNI | NULL    |       |
+                | MedicineID        | int unsigned | NO   | UNI | NULL    |       |
+                +-------------------+--------------+------+-----+---------+-------+
+
+        6) Створення Warehouse:
+            
+            CREATE TABLE Warehouse (
+                WarehouseID INT UNSIGNED NOT NULL UNIQUE,
+                Name VARCHAR(40) NOT NULL,
+                CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
+            );
+
+            Результат:
+
+                DESCRIBE Warehouse;
+                +-------------+--------------+------+-----+---------+-------+
+                | Field       | Type         | Null | Key | Default | Extra |
+                +-------------+--------------+------+-----+---------+-------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    |       |
+                | Name        | varchar(40)  | NO   |     | NULL    |       |
+                +-------------+--------------+------+-----+---------+-------+
+
+        7) Створення WarehouseRequest:
+            
+            CREATE TABLE WarehouseRequest (
+                WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE,
+                MedicineID INT UNSIGNED NOT NULL UNIQUE,
+                StorageID INT UNSIGNED NOT NULL UNIQUE,
+                WarehouseID INT UNSIGNED NOT NULL UNIQUE,
+                CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
+                CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+
+            Результат:
+
+                DESCRIBE WarehouseRequest;
+                    +--------------------+--------------+------+-----+---------+-------+
+                    | Field              | Type         | Null | Key | Default | Extra |
+                    +--------------------+--------------+------+-----+---------+-------+
+                    | WarehouseRequestID | int unsigned | NO   | PRI | NULL    |       |
+                    | MedicineID         | int unsigned | NO   | UNI | NULL    |       |
+                    | StorageID          | int unsigned | NO   | UNI | NULL    |       |
+                    | WarehouseID        | int unsigned | NO   | UNI | NULL    |       |
+                    +--------------------+--------------+------+-----+---------+-------+
+
+
+        8) Створення ReservedMedicine:
+
+            CREATE TABLE ReservedMedicine (
+                ReservedMedicineID INT UNSIGNED NOT NULL UNIQUE,
+                MedicineID INT UNSIGNED NOT NULL,
+                CONSTRAINT ReservedMedicineID PRIMARY KEY (ReservedMedicineID),
+                CONSTRAINT ReservedMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+
+            Результат:
+
+                DESCRIBE ReservedMedicine;
+                    +--------------------+--------------+------+-----+---------+-------+
+                    | Field              | Type         | Null | Key | Default | Extra |
+                    +--------------------+--------------+------+-----+---------+-------+
+                    | ReservedMedicineID | int unsigned | NO   | PRI | NULL    |       |
+                    | MedicineID         | int unsigned | NO   | MUL | NULL    |       |
+                    +--------------------+--------------+------+-----+---------+-------+
+
+        9) Створення Orders:
+            
+            CREATE TABLE Orders (
+                OrderID INT UNSIGNED NOT NULL UNIQUE,
+                DoctorFullName VARCHAR(40) NOT NULL,
+                DoctorSignature TINYBLOB NOT NULL,
+                TypeOfUse VARCHAR(40) NOT NULL,
+                PacientFullName VARCHAR(40) NOT NULL,
+                PacientAge TINYINT NOT NULL,
+                NumberOfMedicine TINYINT NOT NULL,
+                PreparationDate DATETIME NOT NULL,
+                Price INT UNSIGNED NOT NULL,
+                ReceiptID INT UNSIGNED NOT NULL UNIQUE,
+                CONSTRAINT OrderID PRIMARY KEY (OrderID),
+                CONSTRAINT OrdersForeignReceipt FOREIGN KEY (ReceiptID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+
+            Результат:
+
+                DESCRIBE Orders;
+                    +------------------+--------------+------+-----+---------+-------+
+                    | Field            | Type         | Null | Key | Default | Extra |
+                    +------------------+--------------+------+-----+---------+-------+
+                    | OrderID          | int unsigned | NO   | PRI | NULL    |       |
+                    | DoctorFullName   | varchar(40)  | NO   |     | NULL    |       |
+                    | DoctorSignature  | tinyblob     | NO   |     | NULL    |       |
+                    | TypeOfUse        | varchar(40)  | NO   |     | NULL    |       |
+                    | PacientFullName  | varchar(40)  | NO   |     | NULL    |       |
+                    | PacientAge       | tinyint      | NO   |     | NULL    |       |
+                    | NumberOfMedicine | tinyint      | NO   |     | NULL    |       |
+                    | PreparationDate  | datetime     | NO   |     | NULL    |       |
+                    | Price            | int unsigned | NO   |     | NULL    |       |
+                    | ReceiptID        | int unsigned | NO   | UNI | NULL    |       |
+                    +------------------+--------------+------+-----+---------+-------+
+
+        Результат:
+
+            SHOW TABLES;
+            +------------------+
+            | Tables_in_LabTwo |
+            +------------------+
+            | Medicine         |
+            | Orders           |
+            | PreparationType  |
+            | ReservedMedicine |
+            | Storage          |
+            | StorageMedicine  |
+            | Warehouse        |
+            | WarehouseRequest |
+            +------------------+
+
+    b) зміни в структурах таблиць, обмежень засобами мови SQL (до 10 
+різних за суттю запитів для декількох таблиць):
+
+        1) ALTER TABLE Warehouse MODIFY Name VARCHAR(50);
+
+            Було:
+
+                +-------------+--------------+------+-----+---------+-------+
+                | Field       | Type         | Null | Key | Default | Extra |
+                +-------------+--------------+------+-----+---------+-------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    |       |
+                | Name        | varchar(40)  | NO   |     | NULL    |       |
+                +-------------+--------------+------+-----+---------+-------+
+
+            Стало:
+
+                
 
 
 
