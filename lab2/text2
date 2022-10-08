@@ -1,0 +1,90 @@
+Лабораторна робота № 2. Створення бази даних. Користувачі, ролі, права.
+
+Мета:  Створення бази даних шляхом визначення схеми БД та заповнення її тестовими даними  Навчитися проектувати бази даних, вводити і редагувати структуру таблиць та дані в таблицях  Вивчити DDL-команди SQL для роботи з таблицями (створення, модифікації та видалення таблиць)  Вивчити використовувані в SQL засоби для підтримки цілісності даних та їх практичне застосування Вивчити основні принципи керування обліковими записами та ролями 
+
+а) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю
+
+	1) Створення бази даних:
+
+		CREATE DATABASE LabTwo;
+		USE LabTwo;
+
+	2) Створення PreparationType:
+
+		CREATE TABLE PreparationType (
+		   	PreparationID INT UNSIGNED,
+		    Name VARCHAR(40),
+		    CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
+		  );
+
+	3) Створення Medicine:
+
+        CREATE TABLE Medicine ( 
+            MedicineID INT UNSIGNED,
+            Name VARCHAR(40),
+            PreparationID INT UNSIGNED,
+            CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
+            CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
+        );
+
+	4) Створення MedicineOrderStatistic:
+
+        CREATE TABLE MedicineOrderStaticstic (
+            MedicineOrderStatisticID INT UNSIGNED,
+            TotalBought INT UNSIGNED,
+            MedicineID INT UNSIGNED,
+            CONSTRAINT MedicineOrderStatisticID PRIMARY KEY (MedicineOrderStatisticID),
+                CONSTRAINT MedicineOrderStaticsticForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
+        );
+
+    5) Створення Storage:
+
+        CREATE TABLE Storage (
+            StorageID INT UNSIGNED,
+            Name VARCHAR(40),
+            CONSTRAINT StorageID PRIMARY KEY (StorageID)
+        );
+
+    6) Створення StoregeMedicine:
+
+        CREATE TABLE StoregeMedicine (
+            StoregeMedicineID INT UNSIGNED,
+            CreticalQuantity INT UNSIGNED,
+            TotalQuantity INT UNSIGNED,
+            StorageID INT UNSIGNED,
+            MedicineID INT UNSIGNED,
+            CONSTRAINT StoregeMedicineID PRIMARY KEY (StoregeMedicineID),
+            CONSTRAINT StoregeMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+            CONSTRAINT StoregeMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT ON UPDATE RESTRICT
+        );
+
+    7) Створення Warehouse:
+        
+        CREATE TABLE Warehouse (
+            WarehouseID INT UNSIGNED,
+            Name VARCHAR(40),
+            CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
+        );
+
+    8) Створення WarehouseRequest:
+        
+        CREATE TABLE WarehouseRequest (
+            WarehouseRequestID INT UNSIGNED,
+            MedicineID INT UNSIGNED,
+            StorageID INT UNSIGNED,
+            WarehouseID INT UNSIGNED,
+            CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
+            CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE RESTRICT oN UPDATE RESTRICT,
+            CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY
+
+        );
+
+
+
+
+
+
+
+
+
+
