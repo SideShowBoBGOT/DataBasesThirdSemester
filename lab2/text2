@@ -395,119 +395,238 @@ II) Розробити SQL-скрипти для:
 
     e)  визначити декілька (2-3) типів користувачів, котрі будуть працювати з базою даних. Для кожного користувача визначити набір привілеїв, котрі він буде мати:
 
-            1) 
+        1)  CREATE USER 'Max_Payne'@'localhost' IDENTIFIED BY 'paffMMM14H$';
+            CREATE USER 'Carl_Johnson'@'localhost' IDENTIFIED BY 'jjjCJ#wwwWWE234';
 
-    IV) Згенерувати схему даних засобами СУБД:
 
-        1)  INSERT INTO PreparationType (Name) VALUES ("Carbonization");
-            INSERT INTO PreparationType (Name) VALUES ("High Pressure");
+            Було:
 
-            Результат:
+                SELECT host, user FROM mysql.user;
+                +-----------+------------------+
+                | host      | user             |
+                +-----------+------------------+
+                | localhost | debian-sys-maint |
+                | localhost | mysql.infoschema |
+                | localhost | mysql.session    |
+                | localhost | mysql.sys        |
+                | localhost | root             |
+                +-----------+------------------+
 
-                SELECT * FROM PreparationType;
-                +---------------+---------------+
-                | PreparationID | Name          |
-                +---------------+---------------+
-                |             1 | Carbonization |
-                |             2 | High Pressure |
-                +---------------+---------------+
+            Стало:
 
-        2)  INSERT INTO Medicine (Name, PreparationID) VALUES ("Tealoz", 1);
-            INSERT INTO Medicine (Name, PreparationID) VALUES ("MediCentral", 2);
+                SELECT host, user FROM mysql.user;
+                +-----------+------------------+
+                | host      | user             |
+                +-----------+------------------+
+                | localhost | Carl_Johnson     |
+                | localhost | Max_Payne        |
+                | localhost | debian-sys-maint |
+                | localhost | mysql.infoschema |
+                | localhost | mysql.session    |
+                | localhost | mysql.sys        |
+                | localhost | root             |
+                +-----------+------------------+
 
-            Результат:
+        2)  GRANT SELECT ON LabTwo.Medicine TO 'Max_Payne'@'localhost';
+            GRANT ALL ON LabTwo TO 'Carl_Johnson'@'localhost';
 
-                SELECT * FROM Medicine;
-                +------------+-------------+-------------+---------------+------------------+---------------+
-                | MedicineID | Name        | TotalBought | TotalQuantity | CriticalQuantity | PreparationID |
-                +------------+-------------+-------------+---------------+------------------+---------------+
-                |          1 | Tealoz      |           0 |             0 |                1 |             1 |
-                |          2 | MediCentral |           0 |             0 |                1 |             2 |
-                +------------+-------------+-------------+---------------+------------------+---------------+
+            Було:
 
-        3)  INSERT INTO Storage (Name) VALUES ("StorageOne");
-            INSERT INTO Storage (Name) VALUES ("StorageTwo");
+                SHOW GRANTS FOR 'Max_Payne'@'localhost';
+                +-----------------------------------------------+
+                | Grants for Max_Payne@localhost                |
+                +-----------------------------------------------+
+                | GRANT USAGE ON *.* TO `Max_Payne`@`localhost` |
+                +-----------------------------------------------+
+                SHOW GRANTS FOR 'Carl_Johnson'@'localhost';
+                +--------------------------------------------------+
+                | Grants for Carl_Johnson@localhost                |
+                +--------------------------------------------------+
+                | GRANT USAGE ON *.* TO `Carl_Johnson`@`localhost` |
+                +--------------------------------------------------+
 
-            Результат:
+            Стало:
 
-                SELECT * FROM Storage;
-                +-----------+------------+
-                | StorageID | Name       |
-                +-----------+------------+
-                |         1 | StorageOne |
-                |         2 | StorageTwo |
-                +-----------+------------+
+                SHOW GRANTS FOR 'Max_Payne'@'localhost';
+                +----------------------------------------------------------------+
+                | Grants for Max_Payne@localhost                                 |
+                +----------------------------------------------------------------+
+                | GRANT USAGE ON *.* TO `Max_Payne`@`localhost`                  |
+                | GRANT SELECT ON `LabTwo`.`Medicine` TO `Max_Payne`@`localhost` |
+                +----------------------------------------------------------------+
+                SHOW GRANTS FOR 'Carl_Johnson'@'localhost';
+                +-------------------------------------------------------------------------+
+                | Grants for Carl_Johnson@localhost                                       |
+                +-------------------------------------------------------------------------+
+                | GRANT USAGE ON *.* TO `Carl_Johnson`@`localhost`                        |
+                | GRANT ALL PRIVILEGES ON `LabTwo`.`LabTwo` TO `Carl_Johnson`@`localhost` |
+                +-------------------------------------------------------------------------+
 
-        4)  INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
-            INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 2);
-            INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 1);
+    f)  для типу користувача створити відповідну роль та наділити її необхідними привілеями:
 
-            Результат:
+        1)  CREATE ROLE 'viewer', 'redactor';
+            GRANT SELECT ON * TO 'viewer';
+            GRANT ALL ON * TO 'redactor';
+            GRANT 'viewer' TO 'Max_Payne'@'localhost';
+            GRANT 'redactor' TO 'Carl_Johnson'@'localhost';
 
-                SELECT * FROM StorageMedicine;
-                +-------------------+-----------+------------+
-                | StorageMedicineID | StorageID | MedicineID |
-                +-------------------+-----------+------------+
-                |                 1 |         1 |          1 |
-                |                 2 |         1 |          2 |
-                |                 3 |         2 |          1 |
-                +-------------------+-----------+------------+
+            Було:
 
-        5)  INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
-            INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
+                SHOW GRANTS FOR 'Max_Payne'@'localhost' USING 'viewer';
 
-            Результат:
+                Результат:
 
-                SELECT * FROM Warehouse;
-                +-------------+--------------+------------------+
-                | WarehouseID | Name         | DummyInformation |
-                +-------------+--------------+------------------+
-                |           1 | WarehouseOne | NULL             |
-                |           2 | WarehouseTwo | NULL             |
-                +-------------+--------------+------------------+
+                    ERROR 3530 (HY000): `viewer`@`%` is not granted to `Max_Payne`@`localhost`
 
-        6)  INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
-            INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
-            INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
-            
-            Результат:
+                SHOW GRANTS FOR 'Carl_Johnson'@'localhost' USING 'redactor';
+                
+                Результат:
 
-                SELECT * FROM WarehouseRequest;
-                +--------------------+------------+-----------+-------------+
-                | WarehouseRequestID | MedicineID | StorageID | WarehouseID |
-                +--------------------+------------+-----------+-------------+
-                |                  1 |          1 |         1 |           1 |
-                |                  2 |          2 |         2 |           1 |
-                |                  3 |          2 |         2 |           2 |
-                +--------------------+------------+-----------+-------------+
+                    ERROR 3530 (HY000): `redactor`@`%` is not granted to `Carl_Johnson`@`localhost`
 
-        7)  INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
+            Стало:
 
-            INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
+                SHOW GRANTS FOR 'Max_Payne'@'localhost' USING 'viewer';
 
-            Результат:
+                Результат:
 
-                SELECT * FROM Orders;
-                +---------+----------------+------------
-                | OrderID | DoctorFullName | DoctorCode 
-                +---------+----------------+------------
-                |       1 | Tyler Durden   |    2217854 
-                |       2 | Saul Goodman   |   20082013 
-                +---------+----------------+------------
-                +-----------+-----------------+------------
-                | TypeOfUse | PacientFullName | PacientAge 
-                +-----------+-----------------+------------
-                | Drinking  | The Narrator    |         30 
-                | Chewing   | Walter White    |         50 
-                +-----------+-----------------+------------
-                +------------------+---------------------+--------+
-                | NumberOfMedicine | PreparationDate     | Price  |
-                +------------------+---------------------+--------+
-                |                1 | 2022-10-22 14:00:00 | 180.56 |
-                |                5 | 2022-11-23 18:30:00 | 503.45 |
-                +------------------+---------------------+--------+
+                    +-------------------------------------------------------+
+                    | Grants for Max_Payne@localhost                        |
+                    +-------------------------------------------------------+
+                    | GRANT USAGE ON *.* TO `Max_Payne`@`localhost`         |
+                    | GRANT SELECT ON `LabTwo`.* TO `Max_Payne`@`localhost` |
+                    | GRANT `viewer`@`%` TO `Max_Payne`@`localhost`         |
+                    +-------------------------------------------------------+
 
-        8)  INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (FALSE, 1, 1);
+                SHOW GRANTS FOR 'Carl_Johnson'@'localhost' USING 'redactor';
+                
+                Результат:
+
+                +------------------------------------------------------------------+
+                | Grants for Carl_Johnson@localhost                                |
+                +------------------------------------------------------------------+
+                | GRANT USAGE ON *.* TO `Carl_Johnson`@`localhost`                 |
+                | GRANT ALL PRIVILEGES ON `LabTwo`.* TO `Carl_Johnson`@`localhost` |
+                | GRANT `redactor`@`%` TO `Carl_Johnson`@`localhost`               |
+                +------------------------------------------------------------------+
+
+    g) Зроблено в пуктах (e), (f);
+
+III)    Згенерувати схему даних засобами СУБД
+        
+        1) Зроблено в чатинах (I), (II);
+
+IV) Імпортувати дані в створену БД з використанням засобів СУБД:
+
+    1)  INSERT INTO PreparationType (Name) VALUES ("Carbonization");
+        INSERT INTO PreparationType (Name) VALUES ("High Pressure");
+
+        Результат:
+
+            SELECT * FROM PreparationType;
+            +---------------+---------------+
+            | PreparationID | Name          |
+            +---------------+---------------+
+            |             1 | Carbonization |
+            |             2 | High Pressure |
+            +---------------+---------------+
+
+    2)  INSERT INTO Medicine (Name, PreparationID) VALUES ("Tealoz", 1);
+        INSERT INTO Medicine (Name, PreparationID) VALUES ("MediCentral", 2);
+
+        Результат:
+
+            SELECT * FROM Medicine;
+            +------------+-------------+-------------+---------------+------------------+---------------+
+            | MedicineID | Name        | TotalBought | TotalQuantity | CriticalQuantity | PreparationID |
+            +------------+-------------+-------------+---------------+------------------+---------------+
+            |          1 | Tealoz      |           0 |             0 |                1 |             1 |
+            |          2 | MediCentral |           0 |             0 |                1 |             2 |
+            +------------+-------------+-------------+---------------+------------------+---------------+
+
+    3)  INSERT INTO Storage (Name) VALUES ("StorageOne");
+        INSERT INTO Storage (Name) VALUES ("StorageTwo");
+
+        Результат:
+
+            SELECT * FROM Storage;
+            +-----------+------------+
+            | StorageID | Name       |
+            +-----------+------------+
+            |         1 | StorageOne |
+            |         2 | StorageTwo |
+            +-----------+------------+
+
+    4)  INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
+        INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 2);
+        INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 1);
+
+        Результат:
+
+            SELECT * FROM StorageMedicine;
+            +-------------------+-----------+------------+
+            | StorageMedicineID | StorageID | MedicineID |
+            +-------------------+-----------+------------+
+            |                 1 |         1 |          1 |
+            |                 2 |         1 |          2 |
+            |                 3 |         2 |          1 |
+            +-------------------+-----------+------------+
+
+    5)  INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
+        INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
+
+        Результат:
+
+            SELECT * FROM Warehouse;
+            +-------------+--------------+
+            | WarehouseID | Name         |
+            +-------------+--------------+
+            |           1 | WarehouseOne |
+            |           2 | WarehouseTwo |
+            +-------------+--------------+
+
+    6)  INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
+        INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
+        INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
+        
+        Результат:
+
+            SELECT * FROM WarehouseRequest;
+            +--------------------+------------+-----------+-------------+
+            | WarehouseRequestID | MedicineID | StorageID | WarehouseID |
+            +--------------------+------------+-----------+-------------+
+            |                  1 |          1 |         1 |           1 |
+            |                  2 |          2 |         2 |           1 |
+            |                  3 |          2 |         2 |           2 |
+            +--------------------+------------+-----------+-------------+
+
+    7)  INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
+
+        INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
+
+        Результат:
+
+            SELECT * FROM Orders;
+            +---------+----------------+------------
+            | OrderID | DoctorFullName | DoctorCode 
+            +---------+----------------+------------
+            |       1 | Tyler Durden   |    2217854 
+            |       2 | Saul Goodman   |   20082013 
+            +---------+----------------+------------
+            +-----------+-----------------+------------
+            | TypeOfUse | PacientFullName | PacientAge 
+            +-----------+-----------------+------------
+            | Drinking  | The Narrator    |         30 
+            | Chewing   | Walter White    |         50 
+            +-----------+-----------------+------------
+            +------------------+---------------------+--------+
+            | NumberOfMedicine | PreparationDate     | Price  |
+            +------------------+---------------------+--------+
+            |                1 | 2022-10-22 14:00:00 | 180.56 |
+            |                5 | 2022-11-23 18:30:00 | 503.45 |
+            +------------------+---------------------+--------+
+
+    8)  INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (FALSE, 1, 1);
             INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (TRUE, 1, 2);
             INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (FALSE, 2, 1);
 
@@ -522,6 +641,7 @@ II) Розробити SQL-скрипти для:
                 |                3 |          0 |        1 |          2 |
                 +------------------+------------+----------+------------+
             
-
-
+Висновок:
+    
+    Під час лабораторної роботи я створив базу даних шляхом визначення схеми БД та заповнення її тестовими даними  Навчився проектувати бази даних, вводити і редагувати структуру таблиць та дані в таблицях. Вивчив DDL-команди SQL для роботи з таблицями (створення, модифікації та видалення таблиць)  Вивчив використовувані в SQL засоби для підтримки цілісності даних та їх практичне застосування. Вивчив основні принципи керування обліковими записами та ролями. 
 
