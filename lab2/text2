@@ -8,15 +8,15 @@ II) Розробити SQL-скрипти для:
 
     a) Створити схему БД згідно з розробленою в роботі №1 ER-моделлю:
 
-    	1) Створення бази даних:
+    	1)  Створення бази даних:
 
     		CREATE DATABASE LabTwo;
     		USE LabTwo;
 
-    	2) Створення PreparationType:
+    	2)  Створення PreparationType:
 
             CREATE TABLE PreparationType (
-                PreparationID INT UNSIGNED NOT NULL UNIQUE,
+                PreparationID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
                 Name VARCHAR(40) NOT NULL,
                 CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
             );
@@ -24,22 +24,22 @@ II) Розробити SQL-скрипти для:
             Результат:
 
                 DESCRIBE PreparationType;
-                +---------------+--------------+------+-----+---------+-------+
-                | Field         | Type         | Null | Key | Default | Extra |
-                +---------------+--------------+------+-----+---------+-------+
-                | PreparationID | int unsigned | NO   | PRI | NULL    |       |
-                | Name          | varchar(40)  | NO   |     | NULL    |       |
-                +---------------+--------------+------+-----+---------+-------+
+                +---------------+--------------+------+-----+---------+----------------+
+                | Field         | Type         | Null | Key | Default | Extra          |
+                +---------------+--------------+------+-----+---------+----------------+
+                | PreparationID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name          | varchar(40)  | NO   |     | NULL    |                |
+                +---------------+--------------+------+-----+---------+----------------+
 
-    	3) Створення Medicine:
+    	3)  Створення Medicine:
 
             CREATE TABLE Medicine ( 
-                MedicineID INT UNSIGNED NOT NULL UNIQUE,
+                MedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
                 Name VARCHAR(40) NOT NULL,
                 TotalBought INT UNSIGNED,
                 TotalQuantity INT UNSIGNED NOT NULL,
                 CriticalQuantity INT UNSIGNED NOT NULL,
-                PreparationID INT UNSIGNED NOT NULL UNIQUE,
+                PreparationID INT UNSIGNED NOT NULL,
                 CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
                 CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
             );
@@ -47,21 +47,21 @@ II) Розробити SQL-скрипти для:
             Результат:
 
                 DESCRIBE Medicine;
-                    +------------------+--------------+------+-----+---------+-------+
-                    | Field            | Type         | Null | Key | Default | Extra |
-                    +------------------+--------------+------+-----+---------+-------+
-                    | MedicineID       | int unsigned | NO   | PRI | NULL    |       |
-                    | Name             | varchar(40)  | NO   |     | NULL    |       |
-                    | TotalBought      | int unsigned | YES  |     | NULL    |       |
-                    | TotalQuantity    | int unsigned | NO   |     | NULL    |       |
-                    | CriticalQuantity | int unsigned | NO   |     | NULL    |       |
-                    | PreparationID    | int unsigned | NO   | UNI | NULL    |       |
-                    +------------------+--------------+------+-----+---------+-------+
+                +------------------+--------------+------+-----+---------+----------------+
+                | Field            | Type         | Null | Key | Default | Extra          |
+                +------------------+--------------+------+-----+---------+----------------+
+                | MedicineID       | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name             | varchar(40)  | NO   |     | NULL    |                |
+                | TotalBought      | int unsigned | YES  |     | NULL    |                |
+                | TotalQuantity    | int unsigned | NO   |     | NULL    |                |
+                | CriticalQuantity | int unsigned | NO   |     | NULL    |                |
+                | PreparationID    | int unsigned | NO   | MUL | NULL    |                |
+                +------------------+--------------+------+-----+---------+----------------+
 
-        4) Створення Storage:
+        4)  Створення Storage:
 
             CREATE TABLE Storage (
-                StorageID INT UNSIGNED NOT NULL UNIQUE,
+                StorageID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
                 Name VARCHAR(40) NOT NULL,
                 CONSTRAINT StorageID PRIMARY KEY (StorageID)
             );
@@ -69,20 +69,19 @@ II) Розробити SQL-скрипти для:
             Результат:
 
                 DESCRIBE Storage;
-                +-----------+--------------+------+-----+---------+-------+
-                | Field     | Type         | Null | Key | Default | Extra |
-                +-----------+--------------+------+-----+---------+-------+
-                | StorageID | int unsigned | NO   | PRI | NULL    |       |
-                | Name      | varchar(40)  | NO   |     | NULL    |       |
-                +-----------+--------------+------+-----+---------+-------+
+                +-----------+--------------+------+-----+---------+----------------+
+                | Field     | Type         | Null | Key | Default | Extra          |
+                +-----------+--------------+------+-----+---------+----------------+
+                | StorageID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name      | varchar(40)  | NO   |     | NULL    |                |
+                +-----------+--------------+------+-----+---------+----------------+
 
-        5) Створення StorageMedicine:
+        5)  Створення StorageMedicine:
 
             CREATE TABLE StorageMedicine (
-                StorageMedicineID INT UNSIGNED NOT NULL UNIQUE,
-                
-                StorageID INT UNSIGNED NOT NULL UNIQUE,
-                MedicineID INT UNSIGNED NOT NULL UNIQUE,
+                StorageMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+                StorageID INT UNSIGNED NOT NULL,
+                MedicineID INT UNSIGNED NOT NULL,
                 CONSTRAINT StorageMedicineID PRIMARY KEY (StorageMedicineID),
                 CONSTRAINT StorageMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
                 CONSTRAINT StorageMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
@@ -90,19 +89,19 @@ II) Розробити SQL-скрипти для:
 
             Результат:
 
-            Describe StorageMedicine;
-                +-------------------+--------------+------+-----+---------+-------+
-                | Field             | Type         | Null | Key | Default | Extra |
-                +-------------------+--------------+------+-----+---------+-------+
-                | StorageMedicineID | int unsigned | NO   | PRI | NULL    |       |
-                | StorageID         | int unsigned | NO   | UNI | NULL    |       |
-                | MedicineID        | int unsigned | NO   | UNI | NULL    |       |
-                +-------------------+--------------+------+-----+---------+-------+
+                Describe StorageMedicine;
+                +-------------------+--------------+------+-----+---------+----------------+
+                | Field             | Type         | Null | Key | Default | Extra          |
+                +-------------------+--------------+------+-----+---------+----------------+
+                | StorageMedicineID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | StorageID         | int unsigned | NO   | MUL | NULL    |                |
+                | MedicineID        | int unsigned | NO   | MUL | NULL    |                |
+                +-------------------+--------------+------+-----+---------+----------------+
 
-        6) Створення Warehouse:
+        6)  Створення Warehouse:
             
             CREATE TABLE Warehouse (
-                WarehouseID INT UNSIGNED NOT NULL UNIQUE,
+                WarehouseID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
                 Name VARCHAR(40) NOT NULL,
                 CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
             );
@@ -110,20 +109,20 @@ II) Розробити SQL-скрипти для:
             Результат:
 
                 DESCRIBE Warehouse;
-                +-------------+--------------+------+-----+---------+-------+
-                | Field       | Type         | Null | Key | Default | Extra |
-                +-------------+--------------+------+-----+---------+-------+
-                | WarehouseID | int unsigned | NO   | PRI | NULL    |       |
-                | Name        | varchar(40)  | NO   |     | NULL    |       |
-                +-------------+--------------+------+-----+---------+-------+
+                +-------------+--------------+------+-----+---------+----------------+
+                | Field       | Type         | Null | Key | Default | Extra          |
+                +-------------+--------------+------+-----+---------+----------------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name        | varchar(40)  | NO   |     | NULL    |                |
+                +-------------+--------------+------+-----+---------+----------------+
 
-        7) Створення WarehouseRequest:
+        7)  Створення WarehouseRequest:
             
             CREATE TABLE WarehouseRequest (
-                WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE,
-                MedicineID INT UNSIGNED NOT NULL UNIQUE,
-                StorageID INT UNSIGNED NOT NULL UNIQUE,
-                WarehouseID INT UNSIGNED NOT NULL UNIQUE,
+                WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+                MedicineID INT UNSIGNED NOT NULL,
+                StorageID INT UNSIGNED NOT NULL,
+                WarehouseID INT UNSIGNED NOT NULL,
                 CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
                 CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
                 CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -133,69 +132,70 @@ II) Розробити SQL-скрипти для:
             Результат:
 
                 DESCRIBE WarehouseRequest;
-                    +--------------------+--------------+------+-----+---------+-------+
-                    | Field              | Type         | Null | Key | Default | Extra |
-                    +--------------------+--------------+------+-----+---------+-------+
-                    | WarehouseRequestID | int unsigned | NO   | PRI | NULL    |       |
-                    | MedicineID         | int unsigned | NO   | UNI | NULL    |       |
-                    | StorageID          | int unsigned | NO   | UNI | NULL    |       |
-                    | WarehouseID        | int unsigned | NO   | UNI | NULL    |       |
-                    +--------------------+--------------+------+-----+---------+-------+
+                +--------------------+--------------+------+-----+---------+----------------+
+                | Field              | Type         | Null | Key | Default | Extra          |
+                +--------------------+--------------+------+-----+---------+----------------+
+                | WarehouseRequestID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | MedicineID         | int unsigned | NO   | MUL | NULL    |                |
+                | StorageID          | int unsigned | NO   | MUL | NULL    |                |
+                | WarehouseID        | int unsigned | NO   | MUL | NULL    |                |
+                +--------------------+--------------+------+-----+---------+----------------+
 
-
-        8) Створення ReservedMedicine:
-
-            CREATE TABLE ReservedMedicine (
-                ReservedMedicineID INT UNSIGNED NOT NULL UNIQUE,
-                MedicineID INT UNSIGNED NOT NULL,
-                CONSTRAINT ReservedMedicineID PRIMARY KEY (ReservedMedicineID),
-                CONSTRAINT ReservedMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
-            );
-
-            Результат:
-
-                DESCRIBE ReservedMedicine;
-                    +--------------------+--------------+------+-----+---------+-------+
-                    | Field              | Type         | Null | Key | Default | Extra |
-                    +--------------------+--------------+------+-----+---------+-------+
-                    | ReservedMedicineID | int unsigned | NO   | PRI | NULL    |       |
-                    | MedicineID         | int unsigned | NO   | MUL | NULL    |       |
-                    +--------------------+--------------+------+-----+---------+-------+
-
-        9) Створення Orders:
+        8)  Створення Order:
             
             CREATE TABLE Orders (
-                OrderID INT UNSIGNED NOT NULL UNIQUE,
+                OrdersID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
                 DoctorFullName VARCHAR(40) NOT NULL,
-                DoctorSignature TINYBLOB NOT NULL,
+                DoctorCode INT UNSIGNED NOT NULL,
                 TypeOfUse VARCHAR(40) NOT NULL,
                 PacientFullName VARCHAR(40) NOT NULL,
                 PacientAge TINYINT NOT NULL,
                 NumberOfMedicine TINYINT NOT NULL,
                 PreparationDate DATETIME NOT NULL,
-                Price INT UNSIGNED NOT NULL,
-                ReceiptID INT UNSIGNED NOT NULL UNIQUE,
-                CONSTRAINT OrderID PRIMARY KEY (OrderID),
-                CONSTRAINT OrdersForeignReceipt FOREIGN KEY (ReceiptID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+                Price FLOAT(8, 2) UNSIGNED NOT NULL,
+                CONSTRAINT OrdersID PRIMARY KEY (OrdersID)
             );
 
             Результат:
 
-                DESCRIBE Orders;
-                    +------------------+--------------+------+-----+---------+-------+
-                    | Field            | Type         | Null | Key | Default | Extra |
-                    +------------------+--------------+------+-----+---------+-------+
-                    | OrderID          | int unsigned | NO   | PRI | NULL    |       |
-                    | DoctorFullName   | varchar(40)  | NO   |     | NULL    |       |
-                    | DoctorSignature  | tinyblob     | NO   |     | NULL    |       |
-                    | TypeOfUse        | varchar(40)  | NO   |     | NULL    |       |
-                    | PacientFullName  | varchar(40)  | NO   |     | NULL    |       |
-                    | PacientAge       | tinyint      | NO   |     | NULL    |       |
-                    | NumberOfMedicine | tinyint      | NO   |     | NULL    |       |
-                    | PreparationDate  | datetime     | NO   |     | NULL    |       |
-                    | Price            | int unsigned | NO   |     | NULL    |       |
-                    | ReceiptID        | int unsigned | NO   | UNI | NULL    |       |
-                    +------------------+--------------+------+-----+---------+-------+
+               DESCRIBE Orders;
+                +------------------+---------------------+------+-----+---------+----------------+
+| Field            | Type                | Null | Key | Default | Extra          |
++------------------+---------------------+------+-----+---------+----------------+
+| OrdersID         | int unsigned        | NO   | PRI | NULL    | auto_increment |
+| DoctorFullName   | varchar(40)         | NO   |     | NULL    |                |
+| DoctorCode       | int unsigned        | NO   |     | NULL    |                |
+| TypeOfUse        | varchar(40)         | NO   |     | NULL    |                |
+| PacientFullName  | varchar(40)         | NO   |     | NULL    |                |
+| PacientAge       | tinyint             | NO   |     | NULL    |                |
+| NumberOfMedicine | tinyint             | NO   |     | NULL    |                |
+| PreparationDate  | datetime            | NO   |     | NULL    |                |
+| Price            | float(8,2) unsigned | NO   |     | NULL    |                |
++------------------+---------------------+------+-----+---------+----------------+
+
+        9)  Створення OrdersMedicine:
+
+            CREATE TABLE OrdersMedicine (
+                OrdersMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+                IsReserved BOOL NOT NULL,
+                OrdersID INT UNSIGNED NOT NULL,
+                MedicineID INT UNSIGNED NOT NULL,
+                CONSTRAINT OrdersMedicineID PRIMARY KEY (OrdersMedicineID),
+                CONSTRAINT OrdersMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT OrdersMedicineForeignOrders FOREIGN KEY (OrdersID) REFERENCES Orders (OrdersID) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+
+            Результат:
+
+                DESCRIBE OrdersMedicine;
+                +------------------+--------------+------+-----+---------+----------------+
+                | Field            | Type         | Null | Key | Default | Extra          |
+                +------------------+--------------+------+-----+---------+----------------+
+                | OrdersMedicineID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | IsReserved       | tinyint(1)   | NO   |     | NULL    |                |
+                | OrdersID         | int unsigned | NO   | MUL | NULL    |                |
+                | MedicineID       | int unsigned | NO   | MUL | NULL    |                |
+                +------------------+--------------+------+-----+---------+----------------+
 
         Результат:
 
@@ -205,8 +205,8 @@ II) Розробити SQL-скрипти для:
             +------------------+
             | Medicine         |
             | Orders           |
+            | OrdersMedicine   |
             | PreparationType  |
-            | ReservedMedicine |
             | Storage          |
             | StorageMedicine  |
             | Warehouse        |
@@ -216,25 +216,217 @@ II) Розробити SQL-скрипти для:
     b) зміни в структурах таблиць, обмежень засобами мови SQL (до 10 
 різних за суттю запитів для декількох таблиць):
 
-        1) ALTER TABLE Warehouse MODIFY Name VARCHAR(50);
+        1)  ALTER TABLE Warehouse MODIFY Name VARCHAR(50);
 
             Було:
 
-                +-------------+--------------+------+-----+---------+-------+
-                | Field       | Type         | Null | Key | Default | Extra |
-                +-------------+--------------+------+-----+---------+-------+
-                | WarehouseID | int unsigned | NO   | PRI | NULL    |       |
-                | Name        | varchar(40)  | NO   |     | NULL    |       |
-                +-------------+--------------+------+-----+---------+-------+
+                DESCRIBE Warehouse;
+                +-------------+--------------+------+-----+---------+----------------+
+                | Field       | Type         | Null | Key | Default | Extra          |
+                +-------------+--------------+------+-----+---------+----------------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name        | varchar(40)  | NO   |     | NULL    |                |
+                +-------------+--------------+------+-----+---------+----------------+
 
             Стало:
 
+                DESCRIBE Warehouse;
+                +-------------+--------------+------+-----+---------+----------------+
+                | Field       | Type         | Null | Key | Default | Extra          |
+                +-------------+--------------+------+-----+---------+----------------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name        | varchar(50)  | YES  |     | NULL    |                |
+                +-------------+--------------+------+-----+---------+----------------+
+
+        2)  ALTER TABLE Warehouse ADD COLUMN DummyInformation VARCHAR(50);
+
+            Було:
+
+                DESCRIBE Warehouse;
+                +-------------+--------------+------+-----+---------+----------------+
+                | Field       | Type         | Null | Key | Default | Extra          |
+                +-------------+--------------+------+-----+---------+----------------+
+                | WarehouseID | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name        | varchar(50)  | YES  |     | NULL    |                |
+                +-------------+--------------+------+-----+---------+----------------+
+
+            Стало:
+
+                DESCRIBE Warehouse;
+                +------------------+--------------+------+-----+---------+----------------+
+                | Field            | Type         | Null | Key | Default | Extra          |
+                +------------------+--------------+------+-----+---------+----------------+
+                | WarehouseID      | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name             | varchar(50)  | YES  |     | NULL    |                |
+                | DummyInformation | varchar(50)  | YES  |     | NULL    |                |
+                +------------------+--------------+------+-----+---------+----------------+
+
+        3)  ALTER TABLE Medicine ALTER COLUMN TotalBought SET DEFAULT 0;
+            ALTER TABLE Medicine ALTER COLUMN TotalQuantity SET DEFAULT 0;
+            ALTER TABLE Medicine ALTER COLUMN CriticalQuantity SET DEFAULT 1;
+
+            
+            Було:
+
+                DESCRIBE Medicine;
+                +------------------+--------------+------+-----+---------+----------------+
+                | Field            | Type         | Null | Key | Default | Extra          |
+                +------------------+--------------+------+-----+---------+----------------+
+                | MedicineID       | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name             | varchar(40)  | NO   |     | NULL    |                |
+                | TotalBought      | int unsigned | YES  |     | NULL    |                |
+                | TotalQuantity    | int unsigned | NO   |     | NULL    |                |
+                | CriticalQuantity | int unsigned | NO   |     | NULL    |                |
+                | PreparationID    | int unsigned | NO   | MUL | NULL    |                |
+                +------------------+--------------+------+-----+---------+----------------+
+
+            Стало:
+
+                DESCRIBE Medicine;
+                +------------------+--------------+------+-----+---------+----------------+
+                | Field            | Type         | Null | Key | Default | Extra          |
+                +------------------+--------------+------+-----+---------+----------------+
+                | MedicineID       | int unsigned | NO   | PRI | NULL    | auto_increment |
+                | Name             | varchar(40)  | NO   |     | NULL    |                |
+                | TotalBought      | int unsigned | YES  |     | 0       |                |
+                | TotalQuantity    | int unsigned | NO   |     | 0       |                |
+                | CriticalQuantity | int unsigned | NO   |     | 1       |                |
+                | PreparationID    | int unsigned | NO   | MUL | NULL    |                |
+                +------------------+--------------+------+-----+---------+----------------+
+
+        4)  ALTER TABLE Orders ADD CONSTRAINT MAX_PacientAge CHECK (PacientAge < 160);
+
+            Було:
+
                 
 
+            Стало:
 
+    III) Згенерувати схему даних засобами СУБД:
 
+        1)  INSERT INTO PreparationType (Name) VALUES ("Carbonization");
+            INSERT INTO PreparationType (Name) VALUES ("High Pressure");
 
+            Результат:
 
+                SELECT * FROM PreparationType;
+                +---------------+---------------+
+                | PreparationID | Name          |
+                +---------------+---------------+
+                |             1 | Carbonization |
+                |             2 | High Pressure |
+                +---------------+---------------+
+
+        2)  INSERT INTO Medicine (Name, PreparationID) VALUES ("Tealoz", 1);
+            INSERT INTO Medicine (Name, PreparationID) VALUES ("MediCentral", 2);
+
+            Результат:
+
+                SELECT * FROM Medicine;
+                +------------+-------------+-------------+---------------+------------------+---------------+
+                | MedicineID | Name        | TotalBought | TotalQuantity | CriticalQuantity | PreparationID |
+                +------------+-------------+-------------+---------------+------------------+---------------+
+                |          1 | Tealoz      |           0 |             0 |                1 |             1 |
+                |          2 | MediCentral |           0 |             0 |                1 |             2 |
+                +------------+-------------+-------------+---------------+------------------+---------------+
+
+        3)  INSERT INTO Storage (Name) VALUES ("StorageOne");
+            INSERT INTO Storage (Name) VALUES ("StorageTwo");
+
+            Результат:
+
+                SELECT * FROM Storage;
+                +-----------+------------+
+                | StorageID | Name       |
+                +-----------+------------+
+                |         1 | StorageOne |
+                |         2 | StorageTwo |
+                +-----------+------------+
+
+        4)  INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
+            INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 2);
+            INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 1);
+
+            Результат:
+
+                SELECT * FROM StorageMedicine;
+                +-------------------+-----------+------------+
+                | StorageMedicineID | StorageID | MedicineID |
+                +-------------------+-----------+------------+
+                |                 1 |         1 |          1 |
+                |                 2 |         1 |          2 |
+                |                 3 |         2 |          1 |
+                +-------------------+-----------+------------+
+
+        5)  INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
+            INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
+
+            Результат:
+
+                SELECT * FROM Warehouse;
+                +-------------+--------------+------------------+
+                | WarehouseID | Name         | DummyInformation |
+                +-------------+--------------+------------------+
+                |           1 | WarehouseOne | NULL             |
+                |           2 | WarehouseTwo | NULL             |
+                +-------------+--------------+------------------+
+
+        6)  INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
+            INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
+            INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
+            
+            Результат:
+
+                SELECT * FROM WarehouseRequest;
+                +--------------------+------------+-----------+-------------+
+                | WarehouseRequestID | MedicineID | StorageID | WarehouseID |
+                +--------------------+------------+-----------+-------------+
+                |                  1 |          1 |         1 |           1 |
+                |                  2 |          2 |         2 |           1 |
+                |                  3 |          2 |         2 |           2 |
+                +--------------------+------------+-----------+-------------+
+
+        7)  INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
+
+            INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
+
+            Результат:
+
+                SELECT * FROM Orders;
+                +---------+----------------+------------
+                | OrderID | DoctorFullName | DoctorCode 
+                +---------+----------------+------------
+                |       1 | Tyler Durden   |    2217854 
+                |       2 | Saul Goodman   |   20082013 
+                +---------+----------------+------------
+                +-----------+-----------------+------------
+                | TypeOfUse | PacientFullName | PacientAge 
+                +-----------+-----------------+------------
+                | Drinking  | The Narrator    |         30 
+                | Chewing   | Walter White    |         50 
+                +-----------+-----------------+------------
+                +------------------+---------------------+--------+
+                | NumberOfMedicine | PreparationDate     | Price  |
+                +------------------+---------------------+--------+
+                |                1 | 2022-10-22 14:00:00 | 180.56 |
+                |                5 | 2022-11-23 18:30:00 | 503.45 |
+                +------------------+---------------------+--------+
+
+        8)  INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (FALSE, 1, 1);
+            INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (TRUE, 1, 2);
+            INSERT INTO OrdersMedicine (IsReserved, MedicineID, OrdersID) VALUES (FALSE, 2, 1);
+
+            Результат:
+
+                SELECT * FROM OrdersMedicine;
+                +------------------+------------+----------+------------+
+                | OrdersMedicineID | IsReserved | OrdersID | MedicineID |
+                +------------------+------------+----------+------------+
+                |                1 |          0 |        1 |          1 |
+                |                2 |          1 |        2 |          1 |
+                |                3 |          0 |        1 |          2 |
+                +------------------+------------+----------+------------+
+            
 
 
 
