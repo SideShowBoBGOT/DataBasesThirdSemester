@@ -1,0 +1,212 @@
+CREATE DATABASE LabThree;
+USE LabThree;
+
+CREATE TABLE PreparationType (
+    PreparationID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    Name VARCHAR(40) NOT NULL,
+    CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
+);
+CREATE TABLE Medicine ( 
+    MedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    Name VARCHAR(40) NOT NULL,
+    TotalBought INT UNSIGNED,
+    TotalQuantity INT UNSIGNED NOT NULL,
+    CriticalQuantity INT UNSIGNED NOT NULL,
+    PreparationID INT UNSIGNED NOT NULL,
+    CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
+    CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Storage (
+    StorageID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    Name VARCHAR(40) NOT NULL,
+    CONSTRAINT StorageID PRIMARY KEY (StorageID)
+);
+CREATE TABLE StorageMedicine (
+    StorageMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    StorageID INT UNSIGNED NOT NULL,
+    MedicineID INT UNSIGNED NOT NULL,
+    CONSTRAINT StorageMedicineID PRIMARY KEY (StorageMedicineID),
+    CONSTRAINT StorageMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT StorageMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Warehouse (
+    WarehouseID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    Name VARCHAR(40) NOT NULL,
+    CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
+);
+CREATE TABLE WarehouseRequest (
+    WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    MedicineID INT UNSIGNED NOT NULL,
+    StorageID INT UNSIGNED NOT NULL,
+    WarehouseID INT UNSIGNED NOT NULL,
+    CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
+    CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Orders (
+    OrdersID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    DoctorFullName VARCHAR(40) NOT NULL,
+    DoctorCode INT UNSIGNED NOT NULL,
+    TypeOfUse VARCHAR(40) NOT NULL,
+    PacientFullName VARCHAR(40) NOT NULL,
+    PacientAge TINYINT UNSIGNED NOT NULL,
+    NumberOfMedicine SMALLINT UNSIGNED NOT NULL,
+    PreparationDate DATETIME NOT NULL,
+    Price FLOAT(8, 2) UNSIGNED NOT NULL,
+    CONSTRAINT OrdersID PRIMARY KEY (OrdersID)
+);
+CREATE TABLE OrdersMedicine (
+    OrdersMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    IsReserved BOOL NOT NULL,
+    OrdersID INT UNSIGNED NOT NULL,
+    MedicineID INT UNSIGNED NOT NULL,
+    CONSTRAINT OrdersMedicineID PRIMARY KEY (OrdersMedicineID),
+    CONSTRAINT OrdersMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT OrdersMedicineForeignOrders FOREIGN KEY (OrdersID) REFERENCES Orders (OrdersID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Заповнимо таблицю рядками:
+INSERT INTO PreparationType (Name) VALUES ("Carbonization");
+INSERT INTO PreparationType (Name) VALUES ("Cancerezation");
+INSERT INTO PreparationType (Name) VALUES ("Pressuring");
+INSERT INTO PreparationType (Name) VALUES ("Solarization");
+
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Tealoz Duo", 4, 35, 2, 2);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("PanzerLac", 23, 120, 19, 4);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Laplas", 4, 50, 2, 3);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Riamot", 9, 40, 12, 2);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Macert", 9, 70, 15, 1);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("APlus", NULL, 45, 5, 3);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("StarWater", NULL, 87, 4, 4);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("AntiTrauma", 2, 7, 4, 1);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("RedLight", 2, 5, 4, 1);
+INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("ClassFoster", 2, 9, 4, 1);
+
+INSERT INTO Storage (Name) VALUES ("StorageOne");
+INSERT INTO Storage (Name) VALUES ("StorageTwo");
+INSERT INTO Storage (Name) VALUES ("StorageThree");
+INSERT INTO Storage (Name) VALUES ("StorageFour");
+INSERT INTO Storage (Name) VALUES ("StorageFive");
+INSERT INTO Storage (Name) VALUES ("StorageSix");
+INSERT INTO Storage (Name) VALUES ("StorageSeven");
+
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 2);
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 3);
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 2);
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 1);
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (5, 4);
+INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 4);
+
+INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
+INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
+INSERT INTO Warehouse (Name) VALUES ('WarehouseThree');
+INSERT INTO Warehouse (Name) VALUES ('WarehouseFour');
+INSERT INTO Warehouse (Name) VALUES ('WarehouseFive');
+INSERT INTO Warehouse (Name) VALUES ('WarehouseSix');
+INSERT INTO Warehouse (Name) VALUES ('WarehouseSeven');
+
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 1, 1);
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 3, 4);
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 1, 3);
+INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 3, 3);
+                 
+INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
+INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
+INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Trevis Bickle", 4322013, "Snoring", "Betsy White", 20, 15, '2022-01-23 19:30:00', 503.45);
+INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Mario Mario", 82013, "Sniffing", "Luigi Mario", 50, 5, '2022-11-11 20:30:00', 102.45);
+INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Robocop", 20082013, "Sucking", "Terminator", 50, 5, '2022-04-19 21:30:00', 503.45);
+
+INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 1, 1);
+INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 1, 2);
+INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 3, 4);
+INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 3, 2);
+
+-- 1) Створити запити для вибірки даних з використанням (разом 12 запитів):
+
+-- 	a. Найпростіших умов
+		SELECT Name FROM Medicine WHERE MedicineID = 2;
+
+-- 	b. Операторів порівняння
+		SELECT Name, StorageID FROM Storage WHERE StorageID > 2;
+
+-- 	c. Умов з використанням логічних операторів AND, OR та NOT
+
+		SELECT DoctorFullName, PacientFullName FROM Orders WHERE OrdersID > 1 AND OrdersID < 3;
+		SELECT DoctorFullName, PacientFullName FROM Orders WHERE OrdersID <= 1 OR OrdersID >= 3;
+		SELECT DoctorFullName, PacientFullName FROM Orders WHERE NOT OrdersID=3;
+
+-- 	d. Умов з використанням комбінацій логічних операторів
+
+		SELECT Name, TotalBought, TotalQuantity FROM Medicine WHERE NOT (TotalQuantity > 35 AND TotalBought < 10);
+
+		SELECT Name, TotalBought, TotalQuantity FROM Medicine WHERE (NOT TotalQuantity > 35) OR (NOT TotalBought < 10);
+
+-- 	e. З використанням виразів над стовпцями, як в якості новостворених 
+-- 	стовпців, так і умовах
+
+-- 	f. Використання операторів:
+-- 		i. Приналежності множині
+			SELECT * FROM Warehouse WHERE Name IN ("WarehouseOne", "WarehouseTwo"); 
+
+-- 		ii. Приналежності діапазону
+			SELECT PacientFullName, PacientAge FROM Orders WHERE PacientAge BETWEEN 10 AND 40;
+
+--		iii. Відповідності шаблону
+			SELECT PacientFullName FROM Orders WHERE PacientFullName REGEXP '(Ter)|(The)';
+
+-- 		iv. Перевірка на невизначене значення
+			SELECT Name, TotalBought FROM Medicine WHERE TotalBought IS NULL;
+
+
+-- 2) Створити запити з використанням підзапитів та з’єднань (разом 11
+-- запитів) (в запитах повинні використовуватись 2 та більше таблиць):
+
+-- 		a. Використання підзапитів в рядку вибірки полів (у секції select) та 
+-- 		вибірки з таблиць (у секції from)
+			
+			SELECT CONCAT (Medicine.Name, ' founds in ', Storage.Name) FROM Medicine INNER JOIN StorageMedicine ON Medicine.MedicineID = StorageMedicine.StorageID INNER JOIN Storage ON Storage.StorageID = StorageMedicine.StorageID;
+
+			SELECT pacient, medicine FROM (SELECT Orders.PacientFullName AS pacient, Medicine.Name AS medicine FROM Orders INNER JOIN OrdersMedicine ON Orders.OrdersID = OrdersMedicine.OrdersID INNER JOIN Medicine ON Medicine.MedicineID = OrdersMedicine.MedicineID WHERE Orders.PacientFullName REGEXP 'i') sub;
+
+--		b. Використання підзапитів в умовах з конструкціями EXISTS, IN
+			
+-- 			Обираємо такі ліки, де ім!я сховища починається з "F":
+
+			SELECT Medicine.Name, Storage.Name FROM Medicine INNER JOIN StorageMedicine ON Medicine.MedicineID = StorageMedicine.StorageID INNER JOIN Storage ON Storage.StorageID = StorageMedicine.StorageID WHERE Storage.Name IN (SELECT Name FROM Storage WHERE Name REGEXP 'F');
+
+-- 			Обираємо такі ліки, які містяться хоча б в одному сховищі:
+
+			SELECT Name FROM Medicine AS med WHERE EXISTS (SELECT 1 FROM StorageMedicine AS sm WHERE med.MedicineID = sm.MedicineID);
+
+-- 		c. Декартовий добуток
+
+			SELECT Medicine.Name, Warehouse.Name FROM Medicine JOIN Warehouse;
+
+-- 		d. З’єднання декількох таблиць за рівністю
+
+			SELECT Medicine.Name, med.Name, med.PreparationID FROM Medicine INNER JOIN Medicine AS med ON Medicine.PreparationID = med.PreparationID;
+
+-- 		e. З’єднання декількох таблиць за рівністю та умовою відбору
+
+			SELECT Medicine.Name, med.Name, med.PreparationID FROM Medicine INNER JOIN Medicine AS med ON Medicine.PreparationID = med.PreparationID AND Medicine.Name != med.Name;
+
+-- 		f. Внутрішнього з’єднання
+
+			SELECT Medicine.Name, Storage.Name FROM Medicine INNER JOIN StorageMedicine ON Medicine.MedicineID = StorageMedicine.StorageID INNER JOIN Storage ON Storage.StorageID = StorageMedicine.StorageID;
+
+-- 		g. Лівого зовнішнього з’єднання
+
+			SELECT Medicine.Name, Storage.Name FROM Medicine LEFT OUTER JOIN StorageMedicine ON Medicine.MedicineID = StorageMedicine.StorageID LEFT OUTER JOIN Storage ON Storage.StorageID = StorageMedicine.StorageID;
+
+-- 		h. Правого зовнішнього з’єднання
+
+			SELECT Medicine.Name, Storage.Name FROM Medicine RIGHT OUTER JOIN StorageMedicine ON Medicine.MedicineID = StorageMedicine.MedicineID RIGHT OUTER JOIN Storage ON Storage.StorageID = StorageMedicine.StorageID;
+
+-- 		i. Об’єднання запитів
+
+			SELECT doctor, pacient, medicine FROM (SELECT OrdersID AS id,PacientFullName AS pacient, DoctorFullName AS doctor FROM Orders) ords INNER JOIN OrdersMedicine ON ords.id = OrdersMedicine.OrdersID INNER JOIN (SELECT Name as medicine, MedicineID as id FROM Medicine) sub ON sub.id = OrdersMedicine.MedicineID;
