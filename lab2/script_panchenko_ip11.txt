@@ -407,8 +407,8 @@
                 -- e)  визначити декілька (2-3) типів користувачів, котрі будуть працювати з базою даних. Для кожного користувача визначити набір привілеїв, котрі він буде мати:
 
                     -- 1)  
-                            CREATE USER 'Max_Payne'@'localhost' IDENTIFIED BY 'paffMMM14H$';
-                            CREATE USER 'Carl_Johnson'@'localhost' IDENTIFIED BY 'jjjCJ#wwwWWE234';
+                            CREATE USER 'John_Payne'@'localhost' IDENTIFIED BY 'paffMMM14H$';
+                            CREATE USER 'Max_Johnson'@'localhost' IDENTIFIED BY 'jjjCJ#wwwWWE234';
 
 
                         -- Було:
@@ -440,12 +440,12 @@
                             -- +-----------+------------------+
 
                     -- 2)  
-                        GRANT SELECT ON LabTwo.Medicine TO 'Max_Payne'@'localhost';
-                        GRANT ALL ON LabTwo TO 'Carl_Johnson'@'localhost';
+                        GRANT SELECT ON LabTwo.Medicine TO 'John_Payne'@'localhost';
+                        GRANT ALL ON LabTwo TO 'Max_Johnson'@'localhost';
 
                         -- Було:
 
-                            -- SHOW GRANTS FOR 'Max_Payne'@'localhost';
+                            -- SHOW GRANTS FOR 'John_Payne'@'localhost';
                             -- +-----------------------------------------------+
                             -- | Grants for Max_Payne@localhost                |
                             -- +-----------------------------------------------+
@@ -481,8 +481,8 @@
                         CREATE ROLE 'viewer', 'redactor';
                         GRANT SELECT ON * TO 'viewer';
                         GRANT ALL ON * TO 'redactor';
-                        GRANT 'viewer' TO 'Max_Payne'@'localhost';
-                        GRANT 'redactor' TO 'Carl_Johnson'@'localhost';
+                        GRANT 'viewer' TO 'John_Payne'@'localhost';
+                        GRANT 'redactor' TO 'Max_Johnson'@'localhost';
 
                         -- Було:
 
@@ -500,7 +500,7 @@
 
                         -- Стало:
 
-                            SHOW GRANTS FOR 'Max_Payne'@'localhost' USING 'viewer';
+                            SHOW GRANTS FOR 'John_Payne'@'localhost' USING 'viewer';
 
                             -- Результат:
 
@@ -512,7 +512,7 @@
                             --     | GRANT `viewer`@`%` TO `Max_Payne`@`localhost`         |
                             --     +-------------------------------------------------------+
 
-                            SHOW GRANTS FOR 'Carl_Johnson'@'localhost' USING 'redactor';
+                            SHOW GRANTS FOR 'Max_Johnson'@'localhost' USING 'redactor';
                             
                             -- Результат:
 
@@ -533,6 +533,9 @@
             -- IV) Імпортувати дані в створену БД з використанням засобів СУБД:
 
                 -- 1)  
+
+                    
+
                     INSERT INTO PreparationType (Name) VALUES ("Carbonization");
                     INSERT INTO PreparationType (Name) VALUES ("High Pressure");
 

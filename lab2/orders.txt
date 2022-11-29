@@ -1,0 +1,3 @@
+1	"Tyler Durden"	2217854	"Drinking"	"The Narrator"	30	1	2022-10-22 14:00:00	180.56
+2	"Saul Goodman"	20082013	"Chewing"	"Walter White"	50	5	2022-11-23 18:30:00	503.45
+
