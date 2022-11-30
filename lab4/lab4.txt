@@ -195,30 +195,30 @@
 
                     SELECT Name FROM Medicine;
 
-                    +-------------+
-                    | Name        |
-                    +-------------+
-                    | Tealoz Duo  |
-                    | PanzerLac   |
-                    | Laplas      |
-                    | Riamot      |
-                    | Macert      |
-                    | APlus       |
-                    | StarWater   |
-                    | AntiTrauma  |
-                    | RedLight    |
-                    | ClassFoster |
-                    +-------------+
+                    -- +-------------+
+                    -- | Name        |
+                    -- +-------------+
+                    -- | Tealoz Duo  |
+                    -- | PanzerLac   |
+                    -- | Laplas      |
+                    -- | Riamot      |
+                    -- | Macert      |
+                    -- | APlus       |
+                    -- | StarWater   |
+                    -- | AntiTrauma  |
+                    -- | RedLight    |
+                    -- | ClassFoster |
+                    -- +-------------+
 
                 -- Результат запиту:
 
                     SELECT COUNT(*) AS TotalNumberOfMedicine FROM Medicine;
 
-                    +-----------------------+
-                    | TotalNumberOfMedicine |
-                    +-----------------------+
-                    |                    10 |
-                    +-----------------------+
+                    -- +-----------------------+
+                    -- | TotalNumberOfMedicine |
+                    -- +-----------------------+
+                    -- |                    10 |
+                    -- +-----------------------+
 
 --      b. запит з використанням функції SUM;
             
@@ -228,30 +228,30 @@
 
                     SELECT Name, TotalQuantity FROM Medicine;
 
-                    +-------------+---------------+
-                    | Name        | TotalQuantity |
-                    +-------------+---------------+
-                    | Tealoz Duo  |            35 |
-                    | PanzerLac   |           120 |
-                    | Laplas      |            50 |
-                    | Riamot      |            40 |
-                    | Macert      |            70 |
-                    | APlus       |            45 |
-                    | StarWater   |            87 |
-                    | AntiTrauma  |             7 |
-                    | RedLight    |             5 |
-                    | ClassFoster |             9 |
-                    +-------------+---------------+
+                    -- +-------------+---------------+
+                    -- | Name        | TotalQuantity |
+                    -- +-------------+---------------+
+                    -- | Tealoz Duo  |            35 |
+                    -- | PanzerLac   |           120 |
+                    -- | Laplas      |            50 |
+                    -- | Riamot      |            40 |
+                    -- | Macert      |            70 |
+                    -- | APlus       |            45 |
+                    -- | StarWater   |            87 |
+                    -- | AntiTrauma  |             7 |
+                    -- | RedLight    |             5 |
+                    -- | ClassFoster |             9 |
+                    -- +-------------+---------------+
 
                 -- Результат запиту:
 
                     SELECT SUM(TotalQuantity) AS TotalTotalQuantity FROM Medicine;
 
-                    +--------------------+
-                    | TotalTotalQuantity |
-                    +--------------------+
-                    |                468 |
-                    +--------------------+
+                    -- +--------------------+
+                    -- | TotalTotalQuantity |
+                    -- +--------------------+
+                    -- |                468 |
+                    -- +--------------------+
 
 --      c. запит з використанням функцій UPPER, LOWER;
             
@@ -261,49 +261,49 @@
 
                     SELECT Name FROM Warehouse;
 
-                    +----------------+
-                    | Name           |
-                    +----------------+
-                    | WarehouseOne   |
-                    | WarehouseTwo   |
-                    | WarehouseThree |
-                    | WarehouseFour  |
-                    | WarehouseFive  |
-                    | WarehouseSix   |
-                    | WarehouseSeven |
-                    +----------------+
+                    -- +----------------+
+                    -- | Name           |
+                    -- +----------------+
+                    -- | WarehouseOne   |
+                    -- | WarehouseTwo   |
+                    -- | WarehouseThree |
+                    -- | WarehouseFour  |
+                    -- | WarehouseFive  |
+                    -- | WarehouseSix   |
+                    -- | WarehouseSeven |
+                    -- +----------------+
 
                 -- Результат запиту:
 
                     SELECT UPPER(Name) FROM Warehouse;
 
-                    +----------------+
-                    | UPPER(Name)    |
-                    +----------------+
-                    | WAREHOUSEONE   |
-                    | WAREHOUSETWO   |
-                    | WAREHOUSETHREE |
-                    | WAREHOUSEFOUR  |
-                    | WAREHOUSEFIVE  |
-                    | WAREHOUSESIX   |
-                    | WAREHOUSESEVEN |
-                    +----------------+
+                    -- +----------------+
+                    -- | UPPER(Name)    |
+                    -- +----------------+
+                    -- | WAREHOUSEONE   |
+                    -- | WAREHOUSETWO   |
+                    -- | WAREHOUSETHREE |
+                    -- | WAREHOUSEFOUR  |
+                    -- | WAREHOUSEFIVE  |
+                    -- | WAREHOUSESIX   |
+                    -- | WAREHOUSESEVEN |
+                    -- +----------------+
 
                 -- Результат запиту:
 
                     SELECT LOWER(Name) FROM Warehouse;
 
-                    +----------------+
-                    | LOWER(Name)    |
-                    +----------------+
-                    | warehouseone   |
-                    | warehousetwo   |
-                    | warehousethree |
-                    | warehousefour  |
-                    | warehousefive  |
-                    | warehousesix   |
-                    | warehouseseven |
-                    +----------------+
+                    -- +----------------+
+                    -- | LOWER(Name)    |
+                    -- +----------------+
+                    -- | warehouseone   |
+                    -- | warehousetwo   |
+                    -- | warehousethree |
+                    -- | warehousefour  |
+                    -- | warehousefive  |
+                    -- | warehousesix   |
+                    -- | warehouseseven |
+                    -- +----------------+
 
 --      d. запит з використанням функцій для роботи з датами;
 
@@ -332,27 +332,27 @@
                 ON
                     PreparationType.PreparationID = Medicine.PreparationID;
 
-                +------------+---------------+--------------+
-                | med        | type          | storage      |
-                +------------+---------------+--------------+
-                | Macert     | Carbonization | StorageSix   |
-                | Macert     | Carbonization | StorageSeven |
-                | Tealoz Duo | Cancerezation | StorageOne   |
-                | Tealoz Duo | Cancerezation | StorageThree |
-                | Tealoz Duo | Cancerezation | StorageFour  |
-                | Tealoz Duo | Cancerezation | StorageSix   |
-                | Tealoz Duo | Cancerezation | StorageSeven |
-                | Riamot     | Cancerezation | StorageOne   |
-                | Riamot     | Cancerezation | StorageFive  |
-                | Riamot     | Cancerezation | StorageSeven |
-                | Laplas     | Pressuring    | StorageThree |
-                | Laplas     | Pressuring    | StorageSeven |
-                | APlus      | Pressuring    | StorageSix   |
-                | PanzerLac  | Solarization  | StorageTwo   |
-                | PanzerLac  | Solarization  | StorageFour  |
-                | PanzerLac  | Solarization  | StorageSix   |
-                | StarWater  | Solarization  | StorageThree |
-                +------------+---------------+--------------+
+                -- +------------+---------------+--------------+
+                -- | med        | type          | storage      |
+                -- +------------+---------------+--------------+
+                -- | Macert     | Carbonization | StorageSix   |
+                -- | Macert     | Carbonization | StorageSeven |
+                -- | Tealoz Duo | Cancerezation | StorageOne   |
+                -- | Tealoz Duo | Cancerezation | StorageThree |
+                -- | Tealoz Duo | Cancerezation | StorageFour  |
+                -- | Tealoz Duo | Cancerezation | StorageSix   |
+                -- | Tealoz Duo | Cancerezation | StorageSeven |
+                -- | Riamot     | Cancerezation | StorageOne   |
+                -- | Riamot     | Cancerezation | StorageFive  |
+                -- | Riamot     | Cancerezation | StorageSeven |
+                -- | Laplas     | Pressuring    | StorageThree |
+                -- | Laplas     | Pressuring    | StorageSeven |
+                -- | APlus      | Pressuring    | StorageSix   |
+                -- | PanzerLac  | Solarization  | StorageTwo   |
+                -- | PanzerLac  | Solarization  | StorageFour  |
+                -- | PanzerLac  | Solarization  | StorageSix   |
+                -- | StarWater  | Solarization  | StorageThree |
+                -- +------------+---------------+--------------+
 
             -- Згрупуємо поля за типом та сховищем
 
@@ -377,25 +377,25 @@
                     Storage.StorageID,
                     PreparationType.PreparationID;
 
-                +-------------------+---------------+--------------+
-                | names             | type          | storage      |
-                +-------------------+---------------+--------------+
-                | Tealoz Duo,Riamot | Cancerezation | StorageOne   |
-                | PanzerLac         | Solarization  | StorageTwo   |
-                | Tealoz Duo        | Cancerezation | StorageThree |
-                | Laplas            | Pressuring    | StorageThree |
-                | StarWater         | Solarization  | StorageThree |
-                | Tealoz Duo        | Cancerezation | StorageFour  |
-                | PanzerLac         | Solarization  | StorageFour  |
-                | Riamot            | Cancerezation | StorageFive  |
-                | Macert            | Carbonization | StorageSix   |
-                | Tealoz Duo        | Cancerezation | StorageSix   |
-                | APlus             | Pressuring    | StorageSix   |
-                | PanzerLac         | Solarization  | StorageSix   |
-                | Macert            | Carbonization | StorageSeven |
-                | Riamot,Tealoz Duo | Cancerezation | StorageSeven |
-                | Laplas            | Pressuring    | StorageSeven |
-                +-------------------+---------------+--------------+
+                -- +-------------------+---------------+--------------+
+                -- | names             | type          | storage      |
+                -- +-------------------+---------------+--------------+
+                -- | Tealoz Duo,Riamot | Cancerezation | StorageOne   |
+                -- | PanzerLac         | Solarization  | StorageTwo   |
+                -- | Tealoz Duo        | Cancerezation | StorageThree |
+                -- | Laplas            | Pressuring    | StorageThree |
+                -- | StarWater         | Solarization  | StorageThree |
+                -- | Tealoz Duo        | Cancerezation | StorageFour  |
+                -- | PanzerLac         | Solarization  | StorageFour  |
+                -- | Riamot            | Cancerezation | StorageFive  |
+                -- | Macert            | Carbonization | StorageSix   |
+                -- | Tealoz Duo        | Cancerezation | StorageSix   |
+                -- | APlus             | Pressuring    | StorageSix   |
+                -- | PanzerLac         | Solarization  | StorageSix   |
+                -- | Macert            | Carbonization | StorageSeven |
+                -- | Riamot,Tealoz Duo | Cancerezation | StorageSeven |
+                -- | Laplas            | Pressuring    | StorageSeven |
+                -- +-------------------+---------------+--------------+
 
 --      f. запит з використанням умови відбору груп HAVING;
             
@@ -420,27 +420,27 @@
                 ON
                     PreparationType.PreparationID = Medicine.PreparationID;
 
-                +------------+----------+---------------+--------------+
-                | med        | quantity | type          | storage      |
-                +------------+----------+---------------+--------------+
-                | Macert     |       70 | Carbonization | StorageSix   |
-                | Macert     |       70 | Carbonization | StorageSeven |
-                | Tealoz Duo |       35 | Cancerezation | StorageOne   |
-                | Tealoz Duo |       35 | Cancerezation | StorageThree |
-                | Tealoz Duo |       35 | Cancerezation | StorageFour  |
-                | Tealoz Duo |       35 | Cancerezation | StorageSix   |
-                | Tealoz Duo |       35 | Cancerezation | StorageSeven |
-                | Riamot     |       40 | Cancerezation | StorageOne   |
-                | Riamot     |       40 | Cancerezation | StorageFive  |
-                | Riamot     |       40 | Cancerezation | StorageSeven |
-                | Laplas     |       50 | Pressuring    | StorageThree |
-                | Laplas     |       50 | Pressuring    | StorageSeven |
-                | APlus      |       45 | Pressuring    | StorageSix   |
-                | PanzerLac  |      120 | Solarization  | StorageTwo   |
-                | PanzerLac  |      120 | Solarization  | StorageFour  |
-                | PanzerLac  |      120 | Solarization  | StorageSix   |
-                | StarWater  |       87 | Solarization  | StorageThree |
-                +------------+----------+---------------+--------------+
+                -- +------------+----------+---------------+--------------+
+                -- | med        | quantity | type          | storage      |
+                -- +------------+----------+---------------+--------------+
+                -- | Macert     |       70 | Carbonization | StorageSix   |
+                -- | Macert     |       70 | Carbonization | StorageSeven |
+                -- | Tealoz Duo |       35 | Cancerezation | StorageOne   |
+                -- | Tealoz Duo |       35 | Cancerezation | StorageThree |
+                -- | Tealoz Duo |       35 | Cancerezation | StorageFour  |
+                -- | Tealoz Duo |       35 | Cancerezation | StorageSix   |
+                -- | Tealoz Duo |       35 | Cancerezation | StorageSeven |
+                -- | Riamot     |       40 | Cancerezation | StorageOne   |
+                -- | Riamot     |       40 | Cancerezation | StorageFive  |
+                -- | Riamot     |       40 | Cancerezation | StorageSeven |
+                -- | Laplas     |       50 | Pressuring    | StorageThree |
+                -- | Laplas     |       50 | Pressuring    | StorageSeven |
+                -- | APlus      |       45 | Pressuring    | StorageSix   |
+                -- | PanzerLac  |      120 | Solarization  | StorageTwo   |
+                -- | PanzerLac  |      120 | Solarization  | StorageFour  |
+                -- | PanzerLac  |      120 | Solarization  | StorageSix   |
+                -- | StarWater  |       87 | Solarization  | StorageThree |
+                -- +------------+----------+---------------+--------------+
 
 
             -- Згрупуємо поля за типом та сховищем, за умовою що тип буде Cancerezation
@@ -467,16 +467,16 @@
                     PreparationType.PreparationID
                 HAVING PreparationType.Name = 'Cancerezation';
 
-                +-------------------+---------------+--------------+
-                | names             | type          | storage      |
-                +-------------------+---------------+--------------+
-                | Riamot            | Cancerezation | StorageFive  |
-                | Riamot,Tealoz Duo | Cancerezation | StorageSeven |
-                | Tealoz Duo        | Cancerezation | StorageFour  |
-                | Tealoz Duo        | Cancerezation | StorageSix   |
-                | Tealoz Duo        | Cancerezation | StorageThree |
-                | Tealoz Duo,Riamot | Cancerezation | StorageOne   |
-                +-------------------+---------------+--------------+
+                -- +-------------------+---------------+--------------+
+                -- | names             | type          | storage      |
+                -- +-------------------+---------------+--------------+
+                -- | Riamot            | Cancerezation | StorageFive  |
+                -- | Riamot,Tealoz Duo | Cancerezation | StorageSeven |
+                -- | Tealoz Duo        | Cancerezation | StorageFour  |
+                -- | Tealoz Duo        | Cancerezation | StorageSix   |
+                -- | Tealoz Duo        | Cancerezation | StorageThree |
+                -- | Tealoz Duo,Riamot | Cancerezation | StorageOne   |
+                -- +-------------------+---------------+--------------+
 
 --      g. запит з використанням HAVING без GROUP BY;
 
@@ -484,30 +484,30 @@
 
                 SELECT Name, MedicineID FROM Medicine;
 
-                +-------------+------------+
-                | Name        | MedicineID |
-                +-------------+------------+
-                | Tealoz Duo  |          1 |
-                | PanzerLac   |          2 |
-                | Laplas      |          3 |
-                | Riamot      |          4 |
-                | Macert      |          5 |
-                | APlus       |          6 |
-                | StarWater   |          7 |
-                | AntiTrauma  |          8 |
-                | RedLight    |          9 |
-                | ClassFoster |         10 |
-                +-------------+------------+
+                -- +-------------+------------+
+                -- | Name        | MedicineID |
+                -- +-------------+------------+
+                -- | Tealoz Duo  |          1 |
+                -- | PanzerLac   |          2 |
+                -- | Laplas      |          3 |
+                -- | Riamot      |          4 |
+                -- | Macert      |          5 |
+                -- | APlus       |          6 |
+                -- | StarWater   |          7 |
+                -- | AntiTrauma  |          8 |
+                -- | RedLight    |          9 |
+                -- | ClassFoster |         10 |
+                -- +-------------+------------+
             
             -- Відбиремо ліки, де ід == 2:
 
                 SELECT Name, MedicineID FROM Medicine HAVING MedicineID = 2;
 
-                +-----------+------------+
-                | Name      | MedicineID |
-                +-----------+------------+
-                | PanzerLac |          2 |
-                +-----------+------------+
+                -- +-----------+------------+
+                -- | Name      | MedicineID |
+                -- +-----------+------------+
+                -- | PanzerLac |          2 |
+                -- +-----------+------------+
 
 --      h. запит з використанням функцій row_number() over ….;
 
@@ -540,17 +540,17 @@
                         Storage.StorageID
                 ) AS sub;
 
-            +--------------+-------+----------+
-            | storage      | total | position |
-            +--------------+-------+----------+
-            | StorageSix   |   270 |        1 |
-            | StorageSeven |   195 |        2 |
-            | StorageThree |   172 |        3 |
-            | StorageFour  |   155 |        4 |
-            | StorageTwo   |   120 |        5 |
-            | StorageOne   |    75 |        6 |
-            | StorageFive  |    40 |        7 |
-            +--------------+-------+----------+
+            -- +--------------+-------+----------+
+            -- | storage      | total | position |
+            -- +--------------+-------+----------+
+            -- | StorageSix   |   270 |        1 |
+            -- | StorageSeven |   195 |        2 |
+            -- | StorageThree |   172 |        3 |
+            -- | StorageFour  |   155 |        4 |
+            -- | StorageTwo   |   120 |        5 |
+            -- | StorageOne   |    75 |        6 |
+            -- | StorageFive  |    40 |        7 |
+            -- +--------------+-------+----------+
 
 
 --      i. запит з використанням сортування по декільком стовпцям.
@@ -573,24 +573,24 @@
                 TotalQuantity DESC,
                 CriticalQuantity DESC;
 
-            +-------------+---------------+------------------+
-            | Name        | TotalQuantity | CriticalQuantity |
-            +-------------+---------------+------------------+
-            | PanzerLac   |           120 |               19 |
-            | StarWater   |            87 |                4 |
-            | Macert      |            70 |               15 |
-            | Laplas      |            50 |                2 |
-            | APlus       |            45 |                5 |
-            | Riamot      |            40 |               12 |
-            | Cardiofit   |            40 |                7 |
-            | RDev        |            40 |                5 |
-            | Vamicol     |            40 |                3 |
-            | Solar       |            40 |                2 |
-            | Tealoz Duo  |            35 |                2 |
-            | ClassFoster |             9 |                4 |
-            | AntiTrauma  |             7 |                4 |
-            | RedLight    |             5 |                4 |
-            +-------------+---------------+------------------+
+            -- +-------------+---------------+------------------+
+            -- | Name        | TotalQuantity | CriticalQuantity |
+            -- +-------------+---------------+------------------+
+            -- | PanzerLac   |           120 |               19 |
+            -- | StarWater   |            87 |                4 |
+            -- | Macert      |            70 |               15 |
+            -- | Laplas      |            50 |                2 |
+            -- | APlus       |            45 |                5 |
+            -- | Riamot      |            40 |               12 |
+            -- | Cardiofit   |            40 |                7 |
+            -- | RDev        |            40 |                5 |
+            -- | Vamicol     |            40 |                3 |
+            -- | Solar       |            40 |                2 |
+            -- | Tealoz Duo  |            35 |                2 |
+            -- | ClassFoster |             9 |                4 |
+            -- | AntiTrauma  |             7 |                4 |
+            -- | RedLight    |             5 |                4 |
+            -- +-------------+---------------+------------------+
 
 
 --  2) Робота з представленнями (view):
@@ -632,43 +632,43 @@
                     med.PreparationID = t.PreparationID;
 
             SELECT * FROM viewOne;
-            +----------------+------------+---------------+--------------+
-            | pacName        | med        | prepType      | storage      |
-            +----------------+------------+---------------+--------------+
-            | Luigi Mario    | Macert     | Carbonization | StorageSix   |
-            | Luigi Mario    | Macert     | Carbonization | StorageSeven |
-            | Betsy White    | Macert     | Carbonization | StorageSix   |
-            | Betsy White    | Macert     | Carbonization | StorageSeven |
-            | The Narrator   | Tealoz Duo | Cancerezation | StorageOne   |
-            | The Narrator   | Tealoz Duo | Cancerezation | StorageThree |
-            | The Narrator   | Tealoz Duo | Cancerezation | StorageFour  |
-            | The Narrator   | Tealoz Duo | Cancerezation | StorageSix   |
-            | The Narrator   | Tealoz Duo | Cancerezation | StorageSeven |
-            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageOne   |
-            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageThree |
-            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageFour  |
-            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageSix   |
-            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageSeven |
-            | Betsy White    | Riamot     | Cancerezation | StorageOne   |
-            | Betsy White    | Riamot     | Cancerezation | StorageFive  |
-            | Betsy White    | Riamot     | Cancerezation | StorageSeven |
-            | Terminator     | Riamot     | Cancerezation | StorageOne   |
-            | Terminator     | Riamot     | Cancerezation | StorageFive  |
-            | Terminator     | Riamot     | Cancerezation | StorageSeven |
-            | Walter White   | Laplas     | Pressuring    | StorageThree |
-            | Walter White   | Laplas     | Pressuring    | StorageSeven |
-            | The Narrator   | APlus      | Pressuring    | StorageSix   |
-            | Luigi Mario    | APlus      | Pressuring    | StorageSix   |
-            | The Narrator   | PanzerLac  | Solarization  | StorageTwo   |
-            | The Narrator   | PanzerLac  | Solarization  | StorageFour  |
-            | The Narrator   | PanzerLac  | Solarization  | StorageSix   |
-            | Betsy White    | PanzerLac  | Solarization  | StorageTwo   |
-            | Betsy White    | PanzerLac  | Solarization  | StorageFour  |
-            | Betsy White    | PanzerLac  | Solarization  | StorageSix   |
-            | Vlad Golovatuk | PanzerLac  | Solarization  | StorageTwo   |
-            | Vlad Golovatuk | PanzerLac  | Solarization  | StorageFour  |
-            | Vlad Golovatuk | PanzerLac  | Solarization  | StorageSix   |
-            +----------------+------------+---------------+--------------+
+            -- +----------------+------------+---------------+--------------+
+            -- | pacName        | med        | prepType      | storage      |
+            -- +----------------+------------+---------------+--------------+
+            -- | Luigi Mario    | Macert     | Carbonization | StorageSix   |
+            -- | Luigi Mario    | Macert     | Carbonization | StorageSeven |
+            -- | Betsy White    | Macert     | Carbonization | StorageSix   |
+            -- | Betsy White    | Macert     | Carbonization | StorageSeven |
+            -- | The Narrator   | Tealoz Duo | Cancerezation | StorageOne   |
+            -- | The Narrator   | Tealoz Duo | Cancerezation | StorageThree |
+            -- | The Narrator   | Tealoz Duo | Cancerezation | StorageFour  |
+            -- | The Narrator   | Tealoz Duo | Cancerezation | StorageSix   |
+            -- | The Narrator   | Tealoz Duo | Cancerezation | StorageSeven |
+            -- | Luigi Mario    | Tealoz Duo | Cancerezation | StorageOne   |
+            -- | Luigi Mario    | Tealoz Duo | Cancerezation | StorageThree |
+            -- | Luigi Mario    | Tealoz Duo | Cancerezation | StorageFour  |
+            -- | Luigi Mario    | Tealoz Duo | Cancerezation | StorageSix   |
+            -- | Luigi Mario    | Tealoz Duo | Cancerezation | StorageSeven |
+            -- | Betsy White    | Riamot     | Cancerezation | StorageOne   |
+            -- | Betsy White    | Riamot     | Cancerezation | StorageFive  |
+            -- | Betsy White    | Riamot     | Cancerezation | StorageSeven |
+            -- | Terminator     | Riamot     | Cancerezation | StorageOne   |
+            -- | Terminator     | Riamot     | Cancerezation | StorageFive  |
+            -- | Terminator     | Riamot     | Cancerezation | StorageSeven |
+            -- | Walter White   | Laplas     | Pressuring    | StorageThree |
+            -- | Walter White   | Laplas     | Pressuring    | StorageSeven |
+            -- | The Narrator   | APlus      | Pressuring    | StorageSix   |
+            -- | Luigi Mario    | APlus      | Pressuring    | StorageSix   |
+            -- | The Narrator   | PanzerLac  | Solarization  | StorageTwo   |
+            -- | The Narrator   | PanzerLac  | Solarization  | StorageFour  |
+            -- | The Narrator   | PanzerLac  | Solarization  | StorageSix   |
+            -- | Betsy White    | PanzerLac  | Solarization  | StorageTwo   |
+            -- | Betsy White    | PanzerLac  | Solarization  | StorageFour  |
+            -- | Betsy White    | PanzerLac  | Solarization  | StorageSix   |
+            -- | Vlad Golovatuk | PanzerLac  | Solarization  | StorageTwo   |
+            -- | Vlad Golovatuk | PanzerLac  | Solarization  | StorageFour  |
+            -- | Vlad Golovatuk | PanzerLac  | Solarization  | StorageSix   |
+            -- +----------------+------------+---------------+--------------+
 
 --      b. створити представлення, котре містить дані з декількох таблиць та
 --          використовує представлення, котре створене в п.a;
@@ -688,17 +688,17 @@
                         storage; 
 
                 SELECT * FROM viewTwo;
-                +--------+--------------+
-                | number | storage      |
-                +--------+--------------+
-                |      9 | StorageSix   |
-                |      7 | StorageSeven |
-                |      4 | StorageOne   |
-                |      3 | StorageThree |
-                |      5 | StorageFour  |
-                |      2 | StorageFive  |
-                |      3 | StorageTwo   |
-                +--------+--------------+
+                -- +--------+--------------+
+                -- | number | storage      |
+                -- +--------+--------------+
+                -- |      9 | StorageSix   |
+                -- |      7 | StorageSeven |
+                -- |      4 | StorageOne   |
+                -- |      3 | StorageThree |
+                -- |      5 | StorageFour  |
+                -- |      2 | StorageFive  |
+                -- |      3 | StorageTwo   |
+                -- +--------+--------------+
 
 --      c. модифікувати представлення з використанням команди ALTER VIEW;
 
@@ -711,34 +711,34 @@
             -- застосуємо DESC:
 
                 DESC viewOne;
-                +----------+-------------+------+-----+---------+-------+
-                | Field    | Type        | Null | Key | Default | Extra |
-                +----------+-------------+------+-----+---------+-------+
-                | pacName  | varchar(40) | NO   |     | NULL    |       |
-                | med      | varchar(40) | NO   |     | NULL    |       |
-                | prepType | varchar(40) | NO   |     | NULL    |       |
-                | storage  | varchar(40) | NO   |     | NULL    |       |
-                +----------+-------------+------+-----+---------+-------+
+                -- +----------+-------------+------+-----+---------+-------+
+                -- | Field    | Type        | Null | Key | Default | Extra |
+                -- +----------+-------------+------+-----+---------+-------+
+                -- | pacName  | varchar(40) | NO   |     | NULL    |       |
+                -- | med      | varchar(40) | NO   |     | NULL    |       |
+                -- | prepType | varchar(40) | NO   |     | NULL    |       |
+                -- | storage  | varchar(40) | NO   |     | NULL    |       |
+                -- +----------+-------------+------+-----+---------+-------+
 
                 DESC viewTwo;
-                +---------+-------------+------+-----+---------+-------+
-                | Field   | Type        | Null | Key | Default | Extra |
-                +---------+-------------+------+-----+---------+-------+
-                | number  | bigint      | NO   |     | 0       |       |
-                | storage | varchar(40) | NO   |     | NULL    |       |
-                +---------+-------------+------+-----+---------+-------+
+                -- +---------+-------------+------+-----+---------+-------+
+                -- | Field   | Type        | Null | Key | Default | Extra |
+                -- +---------+-------------+------+-----+---------+-------+
+                -- | number  | bigint      | NO   |     | 0       |       |
+                -- | storage | varchar(40) | NO   |     | NULL    |       |
+                -- +---------+-------------+------+-----+---------+-------+
 
                 SELECT table_name, is_updatable FROM information_schema.Views LIMIT 2;
 
                     --  Бачимо, що друге представлення оновити не можна, бо застосовували
                     --  агрегуючі функції
                     
-                +------------+--------------+
-                | TABLE_NAME | IS_UPDATABLE |
-                +------------+--------------+
-                | viewOne    | YES          |
-                | viewTwo    | NO           |
-                +------------+--------------+
+                -- +------------+--------------+
+                -- | TABLE_NAME | IS_UPDATABLE |
+                -- +------------+--------------+
+                -- | viewOne    | YES          |
+                -- | viewTwo    | NO           |
+                -- +------------+--------------+
 
 
 

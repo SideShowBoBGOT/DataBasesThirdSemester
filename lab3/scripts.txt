@@ -168,30 +168,30 @@
 
                 SELECT Name, MedicineID FROM Medicine;
 
-                +-------------+------------+
-                | Name        | MedicineID |
-                +-------------+------------+
-                | Tealoz Duo  |          1 |
-                | PanzerLac   |          2 |
-                | Laplas      |          3 |
-                | Riamot      |          4 |
-                | Macert      |          5 |
-                | APlus       |          6 |
-                | StarWater   |          7 |
-                | AntiTrauma  |          8 |
-                | RedLight    |          9 |
-                | ClassFoster |         10 |
-                +-------------+------------+
+--                +-------------+------------+
+--                | Name        | MedicineID |
+--                +-------------+------------+
+--                | Tealoz Duo  |          1 |
+--                | PanzerLac   |          2 |
+--                | Laplas      |          3 |
+--                | Riamot      |          4 |
+--                | Macert      |          5 |
+--                | APlus       |          6 |
+--                | StarWater   |          7 |
+--                | AntiTrauma  |          8 |
+--                | RedLight    |          9 |
+--                | ClassFoster |         10 |
+--                +-------------+------------+
 
             --Результат запиту:
 
                 SELECT Name, MedicineID FROM Medicine WHERE MedicineID = 2;
 
-                +-----------+------------+
-                | Name      | MedicineID |
-                +-----------+------------+
-                | PanzerLac |          2 |
-                +-----------+------------+
+                -- +-----------+------------+
+                -- | Name      | MedicineID |
+                -- +-----------+------------+
+                -- | PanzerLac |          2 |
+                -- +-----------+------------+
 
 
 -- 	b. Операторів порівняння
@@ -202,32 +202,32 @@
 
                 SELECT Name, StorageID FROM Storage;
 
-                +--------------+-----------+
-                | Name         | StorageID |
-                +--------------+-----------+
-                | StorageOne   |         1 |
-                | StorageTwo   |         2 |
-                | StorageThree |         3 |
-                | StorageFour  |         4 |
-                | StorageFive  |         5 |
-                | StorageSix   |         6 |
-                | StorageSeven |         7 |
-                +--------------+-----------+
+                -- +--------------+-----------+
+                -- | Name         | StorageID |
+                -- +--------------+-----------+
+                -- | StorageOne   |         1 |
+                -- | StorageTwo   |         2 |
+                -- | StorageThree |         3 |
+                -- | StorageFour  |         4 |
+                -- | StorageFive  |         5 |
+                -- | StorageSix   |         6 |
+                -- | StorageSeven |         7 |
+                -- +--------------+-----------+
 
             --Результат запиту:
 
 
                 SELECT Name, StorageID FROM Storage WHERE StorageID > 2;
 
-                +--------------+-----------+
-                | Name         | StorageID |
-                +--------------+-----------+
-                | StorageThree |         3 |
-                | StorageFour  |         4 |
-                | StorageFive  |         5 |
-                | StorageSix   |         6 |
-                | StorageSeven |         7 |
-                +--------------+-----------+
+                -- +--------------+-----------+
+                -- | Name         | StorageID |
+                -- +--------------+-----------+
+                -- | StorageThree |         3 |
+                -- | StorageFour  |         4 |
+                -- | StorageFive  |         5 |
+                -- | StorageSix   |         6 |
+                -- | StorageSeven |         7 |
+                -- +--------------+-----------+
         
 
 -- 	c. Умов з використанням логічних операторів AND, OR та NOT
@@ -236,53 +236,53 @@
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders;
 
-            +----------------+-----------------+----------+
-            | DoctorFullName | PacientFullName | OrdersID |
-            +----------------+-----------------+----------+
-            | Tyler Durden   | The Narrator    |        1 |
-            | Saul Goodman   | Walter White    |        2 |
-            | Trevis Bickle  | Betsy White     |        3 |
-            | Mario Mario    | Luigi Mario     |        4 |
-            | Robocop        | Terminator      |        5 |
-            +----------------+-----------------+----------+
+            -- +----------------+-----------------+----------+
+            -- | DoctorFullName | PacientFullName | OrdersID |
+            -- +----------------+-----------------+----------+
+            -- | Tyler Durden   | The Narrator    |        1 |
+            -- | Saul Goodman   | Walter White    |        2 |
+            -- | Trevis Bickle  | Betsy White     |        3 |
+            -- | Mario Mario    | Luigi Mario     |        4 |
+            -- | Robocop        | Terminator      |        5 |
+            -- +----------------+-----------------+----------+
 
         --Результат запиту:
 
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders WHERE OrdersID > 1 AND OrdersID < 3;
 
-            +----------------+-----------------+----------+
-            | DoctorFullName | PacientFullName | OrdersID |
-            +----------------+-----------------+----------+
-            | Saul Goodman   | Walter White    |        2 |
-            +----------------+-----------------+----------+
+            -- +----------------+-----------------+----------+
+            -- | DoctorFullName | PacientFullName | OrdersID |
+            -- +----------------+-----------------+----------+
+            -- | Saul Goodman   | Walter White    |        2 |
+            -- +----------------+-----------------+----------+
 
         --Результат запиту:
 
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders WHERE OrdersID <= 1 OR OrdersID >= 3;
 
-            +----------------+-----------------+----------+
-            | DoctorFullName | PacientFullName | OrdersID |
-            +----------------+-----------------+----------+
-            | Tyler Durden   | The Narrator    |        1 |
-            | Trevis Bickle  | Betsy White     |        3 |
-            | Mario Mario    | Luigi Mario     |        4 |
-            | Robocop        | Terminator      |        5 |
-            +----------------+-----------------+----------+
+            -- +----------------+-----------------+----------+
+            -- | DoctorFullName | PacientFullName | OrdersID |
+            -- +----------------+-----------------+----------+
+            -- | Tyler Durden   | The Narrator    |        1 |
+            -- | Trevis Bickle  | Betsy White     |        3 |
+            -- | Mario Mario    | Luigi Mario     |        4 |
+            -- | Robocop        | Terminator      |        5 |
+            -- +----------------+-----------------+----------+
 
         --Результат запиту:
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders WHERE NOT OrdersID=3;
 
-            +----------------+-----------------+----------+
-            | DoctorFullName | PacientFullName | OrdersID |
-            +----------------+-----------------+----------+
-            | Tyler Durden   | The Narrator    |        1 |
-            | Saul Goodman   | Walter White    |        2 |
-            | Mario Mario    | Luigi Mario     |        4 |
-            | Robocop        | Terminator      |        5 |
-            +----------------+-----------------+----------+
+            -- +----------------+-----------------+----------+
+            -- | DoctorFullName | PacientFullName | OrdersID |
+            -- +----------------+-----------------+----------+
+            -- | Tyler Durden   | The Narrator    |        1 |
+            -- | Saul Goodman   | Walter White    |        2 |
+            -- | Mario Mario    | Luigi Mario     |        4 |
+            -- | Robocop        | Terminator      |        5 |
+            -- +----------------+-----------------+----------+
 
 
 -- 	d. Умов з використанням комбінацій логічних операторів
@@ -291,47 +291,47 @@
 
             SELECT Name, TotalBought, TotalQuantity FROM Medicine;
 
-            +-------------+-------------+---------------+
-            | Name        | TotalBought | TotalQuantity |
-            +-------------+-------------+---------------+
-            | Tealoz Duo  |           4 |            35 |
-            | PanzerLac   |          23 |           120 |
-            | Laplas      |           4 |            50 |
-            | Riamot      |           9 |            40 |
-            | Macert      |           9 |            70 |
-            | APlus       |        NULL |            45 |
-            | StarWater   |        NULL |            87 |
-            | AntiTrauma  |           2 |             7 |
-            | RedLight    |           2 |             5 |
-            | ClassFoster |           2 |             9 |
-            +-------------+-------------+---------------+
+            -- +-------------+-------------+---------------+
+            -- | Name        | TotalBought | TotalQuantity |
+            -- +-------------+-------------+---------------+
+            -- | Tealoz Duo  |           4 |            35 |
+            -- | PanzerLac   |          23 |           120 |
+            -- | Laplas      |           4 |            50 |
+            -- | Riamot      |           9 |            40 |
+            -- | Macert      |           9 |            70 |
+            -- | APlus       |        NULL |            45 |
+            -- | StarWater   |        NULL |            87 |
+            -- | AntiTrauma  |           2 |             7 |
+            -- | RedLight    |           2 |             5 |
+            -- | ClassFoster |           2 |             9 |
+            -- +-------------+-------------+---------------+
 
         --Результат запиту:
 
             SELECT Name, TotalBought, TotalQuantity FROM Medicine WHERE NOT (TotalQuantity > 35 AND TotalBought < 10);
 
-            +-------------+-------------+---------------+
-            | Name        | TotalBought | TotalQuantity |
-            +-------------+-------------+---------------+
-            | Tealoz Duo  |           4 |            35 |
-            | PanzerLac   |          23 |           120 |
-            | AntiTrauma  |           2 |             7 |
-            | RedLight    |           2 |             5 |
-            | ClassFoster |           2 |             9 |
-            +-------------+-------------+---------------+
+            -- +-------------+-------------+---------------+
+            -- | Name        | TotalBought | TotalQuantity |
+            -- +-------------+-------------+---------------+
+            -- | Tealoz Duo  |           4 |            35 |
+            -- | PanzerLac   |          23 |           120 |
+            -- | AntiTrauma  |           2 |             7 |
+            -- | RedLight    |           2 |             5 |
+            -- | ClassFoster |           2 |             9 |
+            -- +-------------+-------------+---------------+
 
 
             SELECT Name, TotalBought, TotalQuantity FROM Medicine WHERE (NOT TotalQuantity > 35) OR (NOT TotalBought < 10);
 
-            +-------------+-------------+---------------+
-            | Name        | TotalBought | TotalQuantity |
-            +-------------+-------------+---------------+
-            | Tealoz Duo  |           4 |            35 |
-            | PanzerLac   |          23 |           120 |
-            | AntiTrauma  |           2 |             7 |
-            | RedLight    |           2 |             5 |
-            | ClassFoster |           2 |             9 |
-            +-------------+-------------+---------------+
+            -- +-------------+-------------+---------------+
+            -- | Name        | TotalBought | TotalQuantity |
+            -- +-------------+-------------+---------------+
+            -- | Tealoz Duo  |           4 |            35 |
+            -- | PanzerLac   |          23 |           120 |
+            -- | AntiTrauma  |           2 |             7 |
+            -- | RedLight    |           2 |             5 |
+            -- | ClassFoster |           2 |             9 |
+            -- +-------------+-------------+---------------+
 
 
 -- 	e. З використанням виразів над стовпцями, як в якості новостворених 
@@ -341,20 +341,20 @@
 
             SELECT Name, TotalQuantity, CriticalQuantity, TotalQuantity - CriticalQuantity AS Reserve FROM Medicine;
 
-            +-------------+---------------+------------------+---------+
-            | Name        | TotalQuantity | CriticalQuantity | Reserve |
-            +-------------+---------------+------------------+---------+
-            | Tealoz Duo  |            35 |                2 |      33 |
-            | PanzerLac   |           120 |               19 |     101 |
-            | Laplas      |            50 |                2 |      48 |
-            | Riamot      |            40 |               12 |      28 |
-            | Macert      |            70 |               15 |      55 |
-            | APlus       |            45 |                5 |      40 |
-            | StarWater   |            87 |                4 |      83 |
-            | AntiTrauma  |             7 |                4 |       3 |
-            | RedLight    |             5 |                4 |       1 |
-            | ClassFoster |             9 |                4 |       5 |
-            +-------------+---------------+------------------+---------+
+            -- +-------------+---------------+------------------+---------+
+            -- | Name        | TotalQuantity | CriticalQuantity | Reserve |
+            -- +-------------+---------------+------------------+---------+
+            -- | Tealoz Duo  |            35 |                2 |      33 |
+            -- | PanzerLac   |           120 |               19 |     101 |
+            -- | Laplas      |            50 |                2 |      48 |
+            -- | Riamot      |            40 |               12 |      28 |
+            -- | Macert      |            70 |               15 |      55 |
+            -- | APlus       |            45 |                5 |      40 |
+            -- | StarWater   |            87 |                4 |      83 |
+            -- | AntiTrauma  |             7 |                4 |       3 |
+            -- | RedLight    |             5 |                4 |       1 |
+            -- | ClassFoster |             9 |                4 |       5 |
+            -- +-------------+---------------+------------------+---------+
 
 -- 	f. Використання операторів:
 
@@ -364,28 +364,28 @@
 
                 SELECT * FROM Warehouse;
 
-                +-------------+----------------+
-                | WarehouseID | Name           |
-                +-------------+----------------+
-                |           1 | WarehouseOne   |
-                |           2 | WarehouseTwo   |
-                |           3 | WarehouseThree |
-                |           4 | WarehouseFour  |
-                |           5 | WarehouseFive  |
-                |           6 | WarehouseSix   |
-                |           7 | WarehouseSeven |
-                +-------------+----------------+
+                -- +-------------+----------------+
+                -- | WarehouseID | Name           |
+                -- +-------------+----------------+
+                -- |           1 | WarehouseOne   |
+                -- |           2 | WarehouseTwo   |
+                -- |           3 | WarehouseThree |
+                -- |           4 | WarehouseFour  |
+                -- |           5 | WarehouseFive  |
+                -- |           6 | WarehouseSix   |
+                -- |           7 | WarehouseSeven |
+                -- +-------------+----------------+
 
             --Результат запиту:
 
                 SELECT * FROM Warehouse WHERE Name IN ("WarehouseOne", "WarehouseTwo");
 
-                +-------------+--------------+
-                | WarehouseID | Name         |
-                +-------------+--------------+
-                |           1 | WarehouseOne |
-                |           2 | WarehouseTwo |
-                +-------------+--------------+
+                -- +-------------+--------------+
+                -- | WarehouseID | Name         |
+                -- +-------------+--------------+
+                -- |           1 | WarehouseOne |
+                -- |           2 | WarehouseTwo |
+                -- +-------------+--------------+
 
 -- 		ii. Приналежності діапазону
 
@@ -393,26 +393,26 @@
 
                 SELECT PacientFullName, PacientAge FROM Orders;
 
-                +-----------------+------------+
-                | PacientFullName | PacientAge |
-                +-----------------+------------+
-                | The Narrator    |         30 |
-                | Walter White    |         50 |
-                | Betsy White     |         20 |
-                | Luigi Mario     |         50 |
-                | Terminator      |         50 |
-                +-----------------+------------+
+                -- +-----------------+------------+
+                -- | PacientFullName | PacientAge |
+                -- +-----------------+------------+
+                -- | The Narrator    |         30 |
+                -- | Walter White    |         50 |
+                -- | Betsy White     |         20 |
+                -- | Luigi Mario     |         50 |
+                -- | Terminator      |         50 |
+                -- +-----------------+------------+
 
             --Результат запиту:
 
                 SELECT PacientFullName, PacientAge FROM Orders WHERE PacientAge BETWEEN 10 AND 40;
 
-                +-----------------+------------+
-                | PacientFullName | PacientAge |
-                +-----------------+------------+
-                | The Narrator    |         30 |
-                | Betsy White     |         20 |
-                +-----------------+------------+
+                -- +-----------------+------------+
+                -- | PacientFullName | PacientAge |
+                -- +-----------------+------------+
+                -- | The Narrator    |         30 |
+                -- | Betsy White     |         20 |
+                -- +-----------------+------------+
 
 
 --		iii. Відповідності шаблону
@@ -421,27 +421,27 @@
 
                 SELECT PacientFullName FROM Orders;
 
-                +-----------------+
-                | PacientFullName |
-                +-----------------+
-                | The Narrator    |
-                | Walter White    |
-                | Betsy White     |
-                | Luigi Mario     |
-                | Terminator      |
-                +-----------------+
+                -- +-----------------+
+                -- | PacientFullName |
+                -- +-----------------+
+                -- | The Narrator    |
+                -- | Walter White    |
+                -- | Betsy White     |
+                -- | Luigi Mario     |
+                -- | Terminator      |
+                -- +-----------------+
 
             --Результат запиту:
 
                 SELECT PacientFullName FROM Orders WHERE PacientFullName REGEXP '(Ter)|(The)';
 
-                +-----------------+
-                | PacientFullName |
-                +-----------------+
-                | The Narrator    |
-                | Walter White    |
-                | Terminator      |
-                +-----------------+
+                -- +-----------------+
+                -- | PacientFullName |
+                -- +-----------------+
+                -- | The Narrator    |
+                -- | Walter White    |
+                -- | Terminator      |
+                -- +-----------------+
 
 
 -- 		iv. Перевірка на невизначене значення
@@ -450,31 +450,31 @@
 
                 SELECT Name, TotalBought FROM Medicine;
 
-                +-------------+-------------+
-                | Name        | TotalBought |
-                +-------------+-------------+
-                | Tealoz Duo  |           4 |
-                | PanzerLac   |          23 |
-                | Laplas      |           4 |
-                | Riamot      |           9 |
-                | Macert      |           9 |
-                | APlus       |        NULL |
-                | StarWater   |        NULL |
-                | AntiTrauma  |           2 |
-                | RedLight    |           2 |
-                | ClassFoster |           2 |
-                +-------------+-------------+
+                -- +-------------+-------------+
+                -- | Name        | TotalBought |
+                -- +-------------+-------------+
+                -- | Tealoz Duo  |           4 |
+                -- | PanzerLac   |          23 |
+                -- | Laplas      |           4 |
+                -- | Riamot      |           9 |
+                -- | Macert      |           9 |
+                -- | APlus       |        NULL |
+                -- | StarWater   |        NULL |
+                -- | AntiTrauma  |           2 |
+                -- | RedLight    |           2 |
+                -- | ClassFoster |           2 |
+                -- +-------------+-------------+
 
             --Результат запиту:
 
                 SELECT Name, TotalBought FROM Medicine WHERE TotalBought IS NULL;
 
-                +-----------+-------------+
-                | Name      | TotalBought |
-                +-----------+-------------+
-                | APlus     |        NULL |
-                | StarWater |        NULL |
-                +-----------+-------------+
+                -- +-----------+-------------+
+                -- | Name      | TotalBought |
+                -- +-----------+-------------+
+                -- | APlus     |        NULL |
+                -- | StarWater |        NULL |
+                -- +-----------+-------------+
 
 -- 2) Створити запити з використанням підзапитів та з’єднань (разом 11
 -- запитів) (в запитах повинні використовуватись 2 та більше таблиць):
@@ -497,17 +497,17 @@
                 INNER JOIN Storage
                     ON Storage.StorageID = StorageMedicine.StorageID;
 
-                +----------------------------------+
-                | FoundsIn                         |
-                +----------------------------------+
-                | Tealoz Duo founds in StorageOne  |
-                | PanzerLac founds in StorageTwo   |
-                | Laplas founds in StorageThree    |
-                | PanzerLac founds in StorageFour  |
-                | Tealoz Duo founds in StorageFour |
-                | Riamot founds in StorageFive     |
-                | Riamot founds in StorageOne      |
-                +----------------------------------+
+                -- +----------------------------------+
+                -- | FoundsIn                         |
+                -- +----------------------------------+
+                -- | Tealoz Duo founds in StorageOne  |
+                -- | PanzerLac founds in StorageTwo   |
+                -- | Laplas founds in StorageThree    |
+                -- | PanzerLac founds in StorageFour  |
+                -- | Tealoz Duo founds in StorageFour |
+                -- | Riamot founds in StorageFive     |
+                -- | Riamot founds in StorageOne      |
+                -- +----------------------------------+
 
             --Результат запиту:
 
@@ -526,12 +526,12 @@
                     WHERE Orders.PacientFullName REGEXP 'i'
                 ) sub;
 
-                    +-------------+-----------+
-                    | pacient     | medicine  |
-                    +-------------+-----------+
-                    | Betsy White | Riamot    |
-                    | Betsy White | PanzerLac |
-                    +-------------+-----------+
+                    -- +-------------+-----------+
+                    -- | pacient     | medicine  |
+                    -- +-------------+-----------+
+                    -- | Betsy White | Riamot    |
+                    -- | Betsy White | PanzerLac |
+                    -- +-------------+-----------+
 
 --		b. Використання підзапитів в умовах з конструкціями EXISTS, IN
 			
@@ -554,13 +554,13 @@
                             Name REGEXP 'F'
                     );
 
-                    +--------+-------------+
-                    | Name   | Name        |
-                    +--------+-------------+
-                    | Riamot | StorageFour |
-                    | Riamot | StorageFour |
-                    | Macert | StorageFive |
-                    +--------+-------------+
+                    -- +--------+-------------+
+                    -- | Name   | Name        |
+                    -- +--------+-------------+
+                    -- | Riamot | StorageFour |
+                    -- | Riamot | StorageFour |
+                    -- | Macert | StorageFive |
+                    -- +--------+-------------+
 
             --Результат запиту:
 
@@ -576,14 +576,14 @@
                             WHERE med.MedicineID = sm.MedicineID
                         );
 
-                    +------------+
-                    | Name       |
-                    +------------+
-                    | Tealoz Duo |
-                    | PanzerLac  |
-                    | Laplas     |
-                    | Riamot     |
-                    +------------+
+                    -- +------------+
+                    -- | Name       |
+                    -- +------------+
+                    -- | Tealoz Duo |
+                    -- | PanzerLac  |
+                    -- | Laplas     |
+                    -- | Riamot     |
+                    -- +------------+
 
 
 -- 		c. Декартовий добуток
@@ -591,80 +591,80 @@
 
                 SELECT Medicine.Name, Warehouse.Name FROM Medicine JOIN Warehouse;
 
-                +-------------+----------------+
-                | Name        | Name           |
-                +-------------+----------------+
-                | Tealoz Duo  | WarehouseSeven |
-                | Tealoz Duo  | WarehouseSix   |
-                | Tealoz Duo  | WarehouseFive  |
-                | Tealoz Duo  | WarehouseFour  |
-                | Tealoz Duo  | WarehouseThree |
-                | Tealoz Duo  | WarehouseTwo   |
-                | Tealoz Duo  | WarehouseOne   |
-                | PanzerLac   | WarehouseSeven |
-                | PanzerLac   | WarehouseSix   |
-                | PanzerLac   | WarehouseFive  |
-                | PanzerLac   | WarehouseFour  |
-                | PanzerLac   | WarehouseThree |
-                | PanzerLac   | WarehouseTwo   |
-                | PanzerLac   | WarehouseOne   |
-                | Laplas      | WarehouseSeven |
-                | Laplas      | WarehouseSix   |
-                | Laplas      | WarehouseFive  |
-                | Laplas      | WarehouseFour  |
-                | Laplas      | WarehouseThree |
-                | Laplas      | WarehouseTwo   |
-                | Laplas      | WarehouseOne   |
-                | Riamot      | WarehouseSeven |
-                | Riamot      | WarehouseSix   |
-                | Riamot      | WarehouseFive  |
-                | Riamot      | WarehouseFour  |
-                | Riamot      | WarehouseThree |
-                | Riamot      | WarehouseTwo   |
-                | Riamot      | WarehouseOne   |
-                | Macert      | WarehouseSeven |
-                | Macert      | WarehouseSix   |
-                | Macert      | WarehouseFive  |
-                | Macert      | WarehouseFour  |
-                | Macert      | WarehouseThree |
-                | Macert      | WarehouseTwo   |
-                | Macert      | WarehouseOne   |
-                | APlus       | WarehouseSeven |
-                | APlus       | WarehouseSix   |
-                | APlus       | WarehouseFive  |
-                | APlus       | WarehouseFour  |
-                | APlus       | WarehouseThree |
-                | APlus       | WarehouseTwo   |
-                | APlus       | WarehouseOne   |
-                | StarWater   | WarehouseSeven |
-                | StarWater   | WarehouseSix   |
-                | StarWater   | WarehouseFive  |
-                | StarWater   | WarehouseFour  |
-                | StarWater   | WarehouseThree |
-                | StarWater   | WarehouseTwo   |
-                | StarWater   | WarehouseOne   |
-                | AntiTrauma  | WarehouseSeven |
-                | AntiTrauma  | WarehouseSix   |
-                | AntiTrauma  | WarehouseFive  |
-                | AntiTrauma  | WarehouseFour  |
-                | AntiTrauma  | WarehouseThree |
-                | AntiTrauma  | WarehouseTwo   |
-                | AntiTrauma  | WarehouseOne   |
-                | RedLight    | WarehouseSeven |
-                | RedLight    | WarehouseSix   |
-                | RedLight    | WarehouseFive  |
-                | RedLight    | WarehouseFour  |
-                | RedLight    | WarehouseThree |
-                | RedLight    | WarehouseTwo   |
-                | RedLight    | WarehouseOne   |
-                | ClassFoster | WarehouseSeven |
-                | ClassFoster | WarehouseSix   |
-                | ClassFoster | WarehouseFive  |
-                | ClassFoster | WarehouseFour  |
-                | ClassFoster | WarehouseThree |
-                | ClassFoster | WarehouseTwo   |
-                | ClassFoster | WarehouseOne   |
-                +-------------+----------------+
+                -- +-------------+----------------+
+                -- | Name        | Name           |
+                -- +-------------+----------------+
+                -- | Tealoz Duo  | WarehouseSeven |
+                -- | Tealoz Duo  | WarehouseSix   |
+                -- | Tealoz Duo  | WarehouseFive  |
+                -- | Tealoz Duo  | WarehouseFour  |
+                -- | Tealoz Duo  | WarehouseThree |
+                -- | Tealoz Duo  | WarehouseTwo   |
+                -- | Tealoz Duo  | WarehouseOne   |
+                -- | PanzerLac   | WarehouseSeven |
+                -- | PanzerLac   | WarehouseSix   |
+                -- | PanzerLac   | WarehouseFive  |
+                -- | PanzerLac   | WarehouseFour  |
+                -- | PanzerLac   | WarehouseThree |
+                -- | PanzerLac   | WarehouseTwo   |
+                -- | PanzerLac   | WarehouseOne   |
+                -- | Laplas      | WarehouseSeven |
+                -- | Laplas      | WarehouseSix   |
+                -- | Laplas      | WarehouseFive  |
+                -- | Laplas      | WarehouseFour  |
+                -- | Laplas      | WarehouseThree |
+                -- | Laplas      | WarehouseTwo   |
+                -- | Laplas      | WarehouseOne   |
+                -- | Riamot      | WarehouseSeven |
+                -- | Riamot      | WarehouseSix   |
+                -- | Riamot      | WarehouseFive  |
+                -- | Riamot      | WarehouseFour  |
+                -- | Riamot      | WarehouseThree |
+                -- | Riamot      | WarehouseTwo   |
+                -- | Riamot      | WarehouseOne   |
+                -- | Macert      | WarehouseSeven |
+                -- | Macert      | WarehouseSix   |
+                -- | Macert      | WarehouseFive  |
+                -- | Macert      | WarehouseFour  |
+                -- | Macert      | WarehouseThree |
+                -- | Macert      | WarehouseTwo   |
+                -- | Macert      | WarehouseOne   |
+                -- | APlus       | WarehouseSeven |
+                -- | APlus       | WarehouseSix   |
+                -- | APlus       | WarehouseFive  |
+                -- | APlus       | WarehouseFour  |
+                -- | APlus       | WarehouseThree |
+                -- | APlus       | WarehouseTwo   |
+                -- | APlus       | WarehouseOne   |
+                -- | StarWater   | WarehouseSeven |
+                -- | StarWater   | WarehouseSix   |
+                -- | StarWater   | WarehouseFive  |
+                -- | StarWater   | WarehouseFour  |
+                -- | StarWater   | WarehouseThree |
+                -- | StarWater   | WarehouseTwo   |
+                -- | StarWater   | WarehouseOne   |
+                -- | AntiTrauma  | WarehouseSeven |
+                -- | AntiTrauma  | WarehouseSix   |
+                -- | AntiTrauma  | WarehouseFive  |
+                -- | AntiTrauma  | WarehouseFour  |
+                -- | AntiTrauma  | WarehouseThree |
+                -- | AntiTrauma  | WarehouseTwo   |
+                -- | AntiTrauma  | WarehouseOne   |
+                -- | RedLight    | WarehouseSeven |
+                -- | RedLight    | WarehouseSix   |
+                -- | RedLight    | WarehouseFive  |
+                -- | RedLight    | WarehouseFour  |
+                -- | RedLight    | WarehouseThree |
+                -- | RedLight    | WarehouseTwo   |
+                -- | RedLight    | WarehouseOne   |
+                -- | ClassFoster | WarehouseSeven |
+                -- | ClassFoster | WarehouseSix   |
+                -- | ClassFoster | WarehouseFive  |
+                -- | ClassFoster | WarehouseFour  |
+                -- | ClassFoster | WarehouseThree |
+                -- | ClassFoster | WarehouseTwo   |
+                -- | ClassFoster | WarehouseOne   |
+                -- +-------------+----------------+
 
 -- 		d. З’єднання декількох таблиць за рівністю
             
@@ -680,38 +680,38 @@
                 WHERE
                     Medicine.PreparationID = med.PreparationID;
 
-                +-------------+-------------+---------------+
-                | Name        | Name        | PreparationID |
-                +-------------+-------------+---------------+
-                | Tealoz Duo  | Tealoz Duo  |             2 |
-                | Tealoz Duo  | Riamot      |             2 |
-                | PanzerLac   | PanzerLac   |             4 |
-                | PanzerLac   | StarWater   |             4 |
-                | Laplas      | Laplas      |             3 |
-                | Laplas      | APlus       |             3 |
-                | Riamot      | Tealoz Duo  |             2 |
-                | Riamot      | Riamot      |             2 |
-                | Macert      | Macert      |             1 |
-                | Macert      | AntiTrauma  |             1 |
-                | Macert      | RedLight    |             1 |
-                | Macert      | ClassFoster |             1 |
-                | APlus       | Laplas      |             3 |
-                | APlus       | APlus       |             3 |
-                | StarWater   | PanzerLac   |             4 |
-                | StarWater   | StarWater   |             4 |
-                | AntiTrauma  | Macert      |             1 |
-                | AntiTrauma  | AntiTrauma  |             1 |
-                | AntiTrauma  | RedLight    |             1 |
-                | AntiTrauma  | ClassFoster |             1 |
-                | RedLight    | Macert      |             1 |
-                | RedLight    | AntiTrauma  |             1 |
-                | RedLight    | RedLight    |             1 |
-                | RedLight    | ClassFoster |             1 |
-                | ClassFoster | Macert      |             1 |
-                | ClassFoster | AntiTrauma  |             1 |
-                | ClassFoster | RedLight    |             1 |
-                | ClassFoster | ClassFoster |             1 |
-                +-------------+-------------+---------------+
+                -- +-------------+-------------+---------------+
+                -- | Name        | Name        | PreparationID |
+                -- +-------------+-------------+---------------+
+                -- | Tealoz Duo  | Tealoz Duo  |             2 |
+                -- | Tealoz Duo  | Riamot      |             2 |
+                -- | PanzerLac   | PanzerLac   |             4 |
+                -- | PanzerLac   | StarWater   |             4 |
+                -- | Laplas      | Laplas      |             3 |
+                -- | Laplas      | APlus       |             3 |
+                -- | Riamot      | Tealoz Duo  |             2 |
+                -- | Riamot      | Riamot      |             2 |
+                -- | Macert      | Macert      |             1 |
+                -- | Macert      | AntiTrauma  |             1 |
+                -- | Macert      | RedLight    |             1 |
+                -- | Macert      | ClassFoster |             1 |
+                -- | APlus       | Laplas      |             3 |
+                -- | APlus       | APlus       |             3 |
+                -- | StarWater   | PanzerLac   |             4 |
+                -- | StarWater   | StarWater   |             4 |
+                -- | AntiTrauma  | Macert      |             1 |
+                -- | AntiTrauma  | AntiTrauma  |             1 |
+                -- | AntiTrauma  | RedLight    |             1 |
+                -- | AntiTrauma  | ClassFoster |             1 |
+                -- | RedLight    | Macert      |             1 |
+                -- | RedLight    | AntiTrauma  |             1 |
+                -- | RedLight    | RedLight    |             1 |
+                -- | RedLight    | ClassFoster |             1 |
+                -- | ClassFoster | Macert      |             1 |
+                -- | ClassFoster | AntiTrauma  |             1 |
+                -- | ClassFoster | RedLight    |             1 |
+                -- | ClassFoster | ClassFoster |             1 |
+                -- +-------------+-------------+---------------+
 
 -- 		e. З’єднання декількох таблиць за рівністю та умовою відбору
 
@@ -729,28 +729,28 @@
                     AND
                         Medicine.Name != med.Name;
 
-                +-------------+-------------+---------------+
-                | Name        | Name        | PreparationID |
-                +-------------+-------------+---------------+
-                | Tealoz Duo  | Riamot      |             2 |
-                | PanzerLac   | StarWater   |             4 |
-                | Laplas      | APlus       |             3 |
-                | Riamot      | Tealoz Duo  |             2 |
-                | Macert      | AntiTrauma  |             1 |
-                | Macert      | RedLight    |             1 |
-                | Macert      | ClassFoster |             1 |
-                | APlus       | Laplas      |             3 |
-                | StarWater   | PanzerLac   |             4 |
-                | AntiTrauma  | Macert      |             1 |
-                | AntiTrauma  | RedLight    |             1 |
-                | AntiTrauma  | ClassFoster |             1 |
-                | RedLight    | Macert      |             1 |
-                | RedLight    | AntiTrauma  |             1 |
-                | RedLight    | ClassFoster |             1 |
-                | ClassFoster | Macert      |             1 |
-                | ClassFoster | AntiTrauma  |             1 |
-                | ClassFoster | RedLight    |             1 |
-                +-------------+-------------+---------------+
+                -- +-------------+-------------+---------------+
+                -- | Name        | Name        | PreparationID |
+                -- +-------------+-------------+---------------+
+                -- | Tealoz Duo  | Riamot      |             2 |
+                -- | PanzerLac   | StarWater   |             4 |
+                -- | Laplas      | APlus       |             3 |
+                -- | Riamot      | Tealoz Duo  |             2 |
+                -- | Macert      | AntiTrauma  |             1 |
+                -- | Macert      | RedLight    |             1 |
+                -- | Macert      | ClassFoster |             1 |
+                -- | APlus       | Laplas      |             3 |
+                -- | StarWater   | PanzerLac   |             4 |
+                -- | AntiTrauma  | Macert      |             1 |
+                -- | AntiTrauma  | RedLight    |             1 |
+                -- | AntiTrauma  | ClassFoster |             1 |
+                -- | RedLight    | Macert      |             1 |
+                -- | RedLight    | AntiTrauma  |             1 |
+                -- | RedLight    | ClassFoster |             1 |
+                -- | ClassFoster | Macert      |             1 |
+                -- | ClassFoster | AntiTrauma  |             1 |
+                -- | ClassFoster | RedLight    |             1 |
+                -- +-------------+-------------+---------------+
 
 -- 		f. Внутрішнього з’єднання
 
@@ -769,17 +769,17 @@
                 ON
                     Storage.StorageID = StorageMedicine.StorageID;
 
-                +------------+--------------+
-                | Name       | Name         |
-                +------------+--------------+
-                | Tealoz Duo | StorageOne   |
-                | PanzerLac  | StorageTwo   |
-                | Laplas     | StorageThree |
-                | PanzerLac  | StorageFour  |
-                | Tealoz Duo | StorageFour  |
-                | Riamot     | StorageFive  |
-                | Riamot     | StorageOne   |
-                +------------+--------------+
+                -- +------------+--------------+
+                -- | Name       | Name         |
+                -- +------------+--------------+
+                -- | Tealoz Duo | StorageOne   |
+                -- | PanzerLac  | StorageTwo   |
+                -- | Laplas     | StorageThree |
+                -- | PanzerLac  | StorageFour  |
+                -- | Tealoz Duo | StorageFour  |
+                -- | Riamot     | StorageFive  |
+                -- | Riamot     | StorageOne   |
+                -- +------------+--------------+
 
 
 -- 		g. Лівого зовнішнього з’єднання
@@ -800,22 +800,22 @@
                 ON
                     Storage.StorageID = StorageMedicine.StorageID;
 
-                +-------------+--------------+
-                | Name        | Name         |
-                +-------------+--------------+
-                | Tealoz Duo  | StorageOne   |
-                | Tealoz Duo  | StorageOne   |
-                | PanzerLac   | StorageTwo   |
-                | Laplas      | StorageThree |
-                | Riamot      | StorageFour  |
-                | Riamot      | StorageFour  |
-                | Macert      | StorageFive  |
-                | APlus       | NULL         |
-                | StarWater   | NULL         |
-                | AntiTrauma  | NULL         |
-                | RedLight    | NULL         |
-                | ClassFoster | NULL         |
-                +-------------+--------------+
+                -- +-------------+--------------+
+                -- | Name        | Name         |
+                -- +-------------+--------------+
+                -- | Tealoz Duo  | StorageOne   |
+                -- | Tealoz Duo  | StorageOne   |
+                -- | PanzerLac   | StorageTwo   |
+                -- | Laplas      | StorageThree |
+                -- | Riamot      | StorageFour  |
+                -- | Riamot      | StorageFour  |
+                -- | Macert      | StorageFive  |
+                -- | APlus       | NULL         |
+                -- | StarWater   | NULL         |
+                -- | AntiTrauma  | NULL         |
+                -- | RedLight    | NULL         |
+                -- | ClassFoster | NULL         |
+                -- +-------------+--------------+
 
 
 -- 		h. Правого зовнішнього з’єднання
@@ -836,19 +836,19 @@
                 ON
                     Storage.StorageID = StorageMedicine.StorageID;
 
-                +------------+--------------+
-                | Name       | Name         |
-                +------------+--------------+
-                | Tealoz Duo | StorageOne   |
-                | Riamot     | StorageOne   |
-                | PanzerLac  | StorageTwo   |
-                | Laplas     | StorageThree |
-                | PanzerLac  | StorageFour  |
-                | Tealoz Duo | StorageFour  |
-                | Riamot     | StorageFive  |
-                | NULL       | StorageSix   |
-                | NULL       | StorageSeven |
-                +------------+--------------+
+                -- +------------+--------------+
+                -- | Name       | Name         |
+                -- +------------+--------------+
+                -- | Tealoz Duo | StorageOne   |
+                -- | Riamot     | StorageOne   |
+                -- | PanzerLac  | StorageTwo   |
+                -- | Laplas     | StorageThree |
+                -- | PanzerLac  | StorageFour  |
+                -- | Tealoz Duo | StorageFour  |
+                -- | Riamot     | StorageFive  |
+                -- | NULL       | StorageSix   |
+                -- | NULL       | StorageSeven |
+                -- +------------+--------------+
 
 -- 		i. Об’єднання запитів
 
@@ -860,34 +860,34 @@
                 UNION
                 SELECT Name AS name FROM Warehouse;
 
-                +----------------+
-                | name           |
-                +----------------+
-                | Tealoz Duo     |
-                | PanzerLac      |
-                | Laplas         |
-                | Riamot         |
-                | Macert         |
-                | APlus          |
-                | StarWater      |
-                | AntiTrauma     |
-                | RedLight       |
-                | ClassFoster    |
-                | StorageOne     |
-                | StorageTwo     |
-                | StorageThree   |
-                | StorageFour    |
-                | StorageFive    |
-                | StorageSix     |
-                | StorageSeven   |
-                | WarehouseOne   |
-                | WarehouseTwo   |
-                | WarehouseThree |
-                | WarehouseFour  |
-                | WarehouseFive  |
-                | WarehouseSix   |
-                | WarehouseSeven |
-                +----------------+
+                -- +----------------+
+                -- | name           |
+                -- +----------------+
+                -- | Tealoz Duo     |
+                -- | PanzerLac      |
+                -- | Laplas         |
+                -- | Riamot         |
+                -- | Macert         |
+                -- | APlus          |
+                -- | StarWater      |
+                -- | AntiTrauma     |
+                -- | RedLight       |
+                -- | ClassFoster    |
+                -- | StorageOne     |
+                -- | StorageTwo     |
+                -- | StorageThree   |
+                -- | StorageFour    |
+                -- | StorageFive    |
+                -- | StorageSix     |
+                -- | StorageSeven   |
+                -- | WarehouseOne   |
+                -- | WarehouseTwo   |
+                -- | WarehouseThree |
+                -- | WarehouseFour  |
+                -- | WarehouseFive  |
+                -- | WarehouseSix   |
+                -- | WarehouseSeven |
+                -- +----------------+
 
 
 
