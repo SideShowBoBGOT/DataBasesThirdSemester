@@ -1,127 +1,746 @@
-CREATE DATABASE LabThree;
-USE LabThree;
+-- Лабораторна робота № 4. Створення запитів на групування, сортування, використання вбудованих функцій. Створення та керування представленнями.
+--
+--          Виконавець: ІП-11 Панченко Сергій
+--          Варіант: 23
+--
+--            Мета:         * Вивчити оператор, котрий використовується в реляційних СУБД, для вибірки даних з таблиць,
+--                                групування та сортування даних
+--                            * Навчитись використовувати вбудовані функції в запитах
+--                            * Вивчити призначення представлень (view) баз даних, синтаксису та семантики
+--                                команд SQL для їх створення, зміни та видалення, системних збережених процедур
+--                                для отримання інформації про представлення
+--
+--                Програмне забезпечення аптеки. Аптека продає медикаменти і
+--                виготовляє їх за рецептами. Ліки можуть бути різних типів:
+--                a. готові ліки: таблетки, мазі, настоянки;
+--                b. виготовлені аптекою: мікстури, мазі, розчини, настойки, порошки.
+--                Різниця в типах ліків відображається в різному наборі атрибутів, що їх
+--                характеризують. В аптеці існує довідник технологій приготування різних
+--                ліків. У ньому вказуються: ідентифікаційний номер технології, назву ліків
+--                і сам спосіб приготування. На складі на всі медикаменти встановлюється
+--                критична норма, тобто коли будь-яких препаратів на складі менше
+--                критичної норми, то складаються заявки на них і їх в терміновому
+--                порядку привозять з оптових складів медикаментів. Для виготовлення
+--                аптекою ліків хворий повинен принести рецепт від лікаря. У рецепті
+--                повинно бути вказано: ПІБ, підпис і печатка лікаря, ПІБ, вік та діагноз
+--                пацієнта, також кількість ліків і спосіб застосування. Хворий віддаєрецепт реєстратору, він приймає замовлення і дивиться, чи все є в
+--                наявності. Якщо не всі ліки є в наявності, такий хворий поповнює
+--                довідник замовлень з позначкою, що не всі компоненти є для замовлення.
+--                Якщо всі компоненти є, то вони резервуються для хворого. Покупець
+--                сплачує ціну ліків, йому повертається рецепт з позначкою про час
+--                виготовлення. У призначений час хворий приходить і за тим самим
+--                рецептом отримує готове ліки. Такий хворий поповнює список відданих
+--                замовлень. Ведеться статистика за обсягами використовуваних
+--                медикаментів.
 
-CREATE TABLE PreparationType (
-    PreparationID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    Name VARCHAR(40) NOT NULL,
-    CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
-);
-CREATE TABLE Medicine ( 
-    MedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    Name VARCHAR(40) NOT NULL,
-    TotalBought INT UNSIGNED,
-    TotalQuantity INT UNSIGNED NOT NULL,
-    CriticalQuantity INT UNSIGNED NOT NULL,
-    PreparationID INT UNSIGNED NOT NULL,
-    CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
-    CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE TABLE Storage (
-    StorageID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    Name VARCHAR(40) NOT NULL,
-    CONSTRAINT StorageID PRIMARY KEY (StorageID)
-);
-CREATE TABLE StorageMedicine (
-    StorageMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    StorageID INT UNSIGNED NOT NULL,
-    MedicineID INT UNSIGNED NOT NULL,
-    CONSTRAINT StorageMedicineID PRIMARY KEY (StorageMedicineID),
-    CONSTRAINT StorageMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT StorageMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE TABLE Warehouse (
-    WarehouseID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    Name VARCHAR(40) NOT NULL,
-    CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
-);
-CREATE TABLE WarehouseRequest (
-    WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    MedicineID INT UNSIGNED NOT NULL,
-    StorageID INT UNSIGNED NOT NULL,
-    WarehouseID INT UNSIGNED NOT NULL,
-    CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
-    CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE TABLE Orders (
-    OrdersID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    DoctorFullName VARCHAR(40) NOT NULL,
-    DoctorCode INT UNSIGNED NOT NULL,
-    TypeOfUse VARCHAR(40) NOT NULL,
-    PacientFullName VARCHAR(40) NOT NULL,
-    PacientAge TINYINT UNSIGNED NOT NULL,
-    NumberOfMedicine SMALLINT UNSIGNED NOT NULL,
-    PreparationDate DATETIME NOT NULL,
-    Price FLOAT(8, 2) UNSIGNED NOT NULL,
-    CONSTRAINT OrdersID PRIMARY KEY (OrdersID)
-);
-CREATE TABLE OrdersMedicine (
-    OrdersMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    IsReserved BOOL NOT NULL,
-    OrdersID INT UNSIGNED NOT NULL,
-    MedicineID INT UNSIGNED NOT NULL,
-    CONSTRAINT OrdersMedicineID PRIMARY KEY (OrdersMedicineID),
-    CONSTRAINT OrdersMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT OrdersMedicineForeignOrders FOREIGN KEY (OrdersID) REFERENCES Orders (OrdersID) ON DELETE CASCADE ON UPDATE CASCADE
-);
+-- 0) Створимо таблиці та заповнимо їх данними:
 
--- Заповнимо таблицю рядками:
-INSERT INTO PreparationType (Name) VALUES ("Carbonization");
-INSERT INTO PreparationType (Name) VALUES ("Cancerezation");
-INSERT INTO PreparationType (Name) VALUES ("Pressuring");
-INSERT INTO PreparationType (Name) VALUES ("Solarization");
+    CREATE DATABASE LabFour;
+    USE LabFour;
 
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Tealoz Duo", 4, 35, 2, 2);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("PanzerLac", 23, 120, 19, 4);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Laplas", 4, 50, 2, 3);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Riamot", 9, 40, 12, 2);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Macert", 9, 70, 15, 1);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("APlus", NULL, 45, 5, 3);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("StarWater", NULL, 87, 4, 4);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("AntiTrauma", 2, 7, 4, 1);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("RedLight", 2, 5, 4, 1);
-INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("ClassFoster", 2, 9, 4, 1);
+    CREATE TABLE PreparationType (
+        PreparationID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
+    );
+    CREATE TABLE Medicine ( 
+        MedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        TotalBought INT UNSIGNED,
+        TotalQuantity INT UNSIGNED NOT NULL,
+        CriticalQuantity INT UNSIGNED NOT NULL,
+        PreparationID INT UNSIGNED NOT NULL,
+        CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
+        CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+    CREATE TABLE Storage (
+        StorageID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        CONSTRAINT StorageID PRIMARY KEY (StorageID)
+    );
+    CREATE TABLE StorageMedicine (
+        StorageMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        StorageID INT UNSIGNED NOT NULL,
+        MedicineID INT UNSIGNED NOT NULL,
+        CONSTRAINT StorageMedicineID PRIMARY KEY (StorageMedicineID),
+        CONSTRAINT StorageMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT StorageMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+    CREATE TABLE Warehouse (
+        WarehouseID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
+    );
+    CREATE TABLE WarehouseRequest (
+        WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        MedicineID INT UNSIGNED NOT NULL,
+        StorageID INT UNSIGNED NOT NULL,
+        WarehouseID INT UNSIGNED NOT NULL,
+        CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
+        CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+    CREATE TABLE Orders (
+        OrdersID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        DoctorFullName VARCHAR(40) NOT NULL,
+        DoctorCode INT UNSIGNED NOT NULL,
+        TypeOfUse VARCHAR(40) NOT NULL,
+        PacientFullName VARCHAR(40) NOT NULL,
+        PacientAge TINYINT UNSIGNED NOT NULL,
+        NumberOfMedicine SMALLINT UNSIGNED NOT NULL,
+        PreparationDate DATETIME NOT NULL,
+        Price FLOAT(8, 2) UNSIGNED NOT NULL,
+        CONSTRAINT OrdersID PRIMARY KEY (OrdersID)
+    );
+    CREATE TABLE OrdersMedicine (
+        OrdersMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        IsReserved BOOL NOT NULL,
+        OrdersID INT UNSIGNED NOT NULL,
+        MedicineID INT UNSIGNED NOT NULL,
+        CONSTRAINT OrdersMedicineID PRIMARY KEY (OrdersMedicineID),
+        CONSTRAINT OrdersMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT OrdersMedicineForeignOrders FOREIGN KEY (OrdersID) REFERENCES Orders (OrdersID) ON DELETE CASCADE ON UPDATE CASCADE
+    );  
 
-INSERT INTO Storage (Name) VALUES ("StorageOne");
-INSERT INTO Storage (Name) VALUES ("StorageTwo");
-INSERT INTO Storage (Name) VALUES ("StorageThree");
-INSERT INTO Storage (Name) VALUES ("StorageFour");
-INSERT INTO Storage (Name) VALUES ("StorageFive");
-INSERT INTO Storage (Name) VALUES ("StorageSix");
-INSERT INTO Storage (Name) VALUES ("StorageSeven");
+    -- Заповнимо таблицю рядками:
+    INSERT INTO PreparationType (Name) VALUES ("Carbonization");
+    INSERT INTO PreparationType (Name) VALUES ("Cancerezation");
+    INSERT INTO PreparationType (Name) VALUES ("Pressuring");
+    INSERT INTO PreparationType (Name) VALUES ("Solarization");
 
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 2);
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 3);
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 2);
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 1);
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (5, 4);
-INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 4);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Tealoz Duo", 4, 35, 2, 2);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("PanzerLac", 23, 120, 19, 4);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Laplas", 4, 50, 2, 3);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Riamot", 9, 40, 12, 2);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Macert", 9, 70, 15, 1);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("APlus", NULL, 45, 5, 3);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("StarWater", NULL, 87, 4, 4);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("AntiTrauma", 2, 7, 4, 1);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("RedLight", 2, 5, 4, 1);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("ClassFoster", 2, 9, 4, 1);
 
-INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
-INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
-INSERT INTO Warehouse (Name) VALUES ('WarehouseThree');
-INSERT INTO Warehouse (Name) VALUES ('WarehouseFour');
-INSERT INTO Warehouse (Name) VALUES ('WarehouseFive');
-INSERT INTO Warehouse (Name) VALUES ('WarehouseSix');
-INSERT INTO Warehouse (Name) VALUES ('WarehouseSeven');
+    INSERT INTO Storage (Name) VALUES ("StorageOne");
+    INSERT INTO Storage (Name) VALUES ("StorageTwo");
+    INSERT INTO Storage (Name) VALUES ("StorageThree");
+    INSERT INTO Storage (Name) VALUES ("StorageFour");
+    INSERT INTO Storage (Name) VALUES ("StorageFive");
+    INSERT INTO Storage (Name) VALUES ("StorageSix");
+    INSERT INTO Storage (Name) VALUES ("StorageSeven");
 
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 1, 1);
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 3, 4);
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 1, 3);
-INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 3, 3);
-                 
-INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
-INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
-INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Trevis Bickle", 4322013, "Snoring", "Betsy White", 20, 15, '2022-01-23 19:30:00', 503.45);
-INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Mario Mario", 82013, "Sniffing", "Luigi Mario", 50, 5, '2022-11-11 20:30:00', 102.45);
-INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Robocop", 20082013, "Sucking", "Terminator", 50, 5, '2022-04-19 21:30:00', 503.45);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 4);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 2);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 3);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 7);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 2);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (5, 4);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 2);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 6);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 5);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 3);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 5);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 4);
 
-INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 1, 1);
-INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 1, 2);
-INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 3, 4);
-INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 3, 2);
+
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseThree');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseFour');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseFive');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseSix');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseSeven');
+
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 1, 1);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 3, 4);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 1, 3);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 3, 3);
+                     
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Trevis Bickle", 4322013, "Snoring", "Betsy White", 20, 15, '2022-01-23 19:30:00', 503.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Mario Mario", 82013, "Sniffing", "Luigi Mario", 50, 5, '2022-11-11 20:30:00', 102.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Robocop", 20082013, "Sucking", "Terminator", 50, 5, '2022-04-19 21:30:00', 503.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Serhii Panchenko", 666666, "Formalizing", "Natalia Cegla", 18, 81, '2022-04-19 21:30:00', 503.99);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Yurii Riabov", 101010101, "Animezation", "Vlad Golovatuk", 19, 21, '2022-11-30 19:20:00', 108.56);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Dmytro Tarasonok", 1234567, "Cabanizaton", "Vano Sheet", 20, 11, '2022-11-29 22:40:00', 73.34);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Kyrylo Sidak", 666999, "Pythonization", "Kipish SMS", 6, 13, '2022-04-19 21:30:00', 13.11);
+
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 1, 1);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 1, 2);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 3, 4);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 4, 5);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 1, 6);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 7, 2);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 2, 3);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 3, 5);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 5, 4);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 4, 1);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 4, 6);
+
+
+--  1) Створити наступні запити:
+--      a. запит з використанням функції COUNT;
+
+--          Підрахуємо кількість ліків, що має аптека:
+
+                -- Уся таблиця:
+
+                    SELECT Name FROM Medicine;
+
+                    +-------------+
+                    | Name        |
+                    +-------------+
+                    | Tealoz Duo  |
+                    | PanzerLac   |
+                    | Laplas      |
+                    | Riamot      |
+                    | Macert      |
+                    | APlus       |
+                    | StarWater   |
+                    | AntiTrauma  |
+                    | RedLight    |
+                    | ClassFoster |
+                    +-------------+
+
+                -- Результат запиту:
+
+                    SELECT COUNT(*) AS TotalNumberOfMedicine FROM Medicine;
+
+                    +-----------------------+
+                    | TotalNumberOfMedicine |
+                    +-----------------------+
+                    |                    10 |
+                    +-----------------------+
+
+--      b. запит з використанням функції SUM;
+            
+            -- Підрахуємо загальну кількість одиниць ліків:
+
+                -- Уся таблиця:
+
+                    SELECT Name, TotalQuantity FROM Medicine;
+
+                    +-------------+---------------+
+                    | Name        | TotalQuantity |
+                    +-------------+---------------+
+                    | Tealoz Duo  |            35 |
+                    | PanzerLac   |           120 |
+                    | Laplas      |            50 |
+                    | Riamot      |            40 |
+                    | Macert      |            70 |
+                    | APlus       |            45 |
+                    | StarWater   |            87 |
+                    | AntiTrauma  |             7 |
+                    | RedLight    |             5 |
+                    | ClassFoster |             9 |
+                    +-------------+---------------+
+
+                -- Результат запиту:
+
+                    SELECT SUM(TotalQuantity) AS TotalTotalQuantity FROM Medicine;
+
+                    +--------------------+
+                    | TotalTotalQuantity |
+                    +--------------------+
+                    |                468 |
+                    +--------------------+
+
+--      c. запит з використанням функцій UPPER, LOWER;
+            
+            -- Відобразимо ім'я складів великими та маленькими буквами
+
+                -- Уся таблиця:
+
+                    SELECT Name FROM Warehouse;
+
+                    +----------------+
+                    | Name           |
+                    +----------------+
+                    | WarehouseOne   |
+                    | WarehouseTwo   |
+                    | WarehouseThree |
+                    | WarehouseFour  |
+                    | WarehouseFive  |
+                    | WarehouseSix   |
+                    | WarehouseSeven |
+                    +----------------+
+
+                -- Результат запиту:
+
+                    SELECT UPPER(Name) FROM Warehouse;
+
+                    +----------------+
+                    | UPPER(Name)    |
+                    +----------------+
+                    | WAREHOUSEONE   |
+                    | WAREHOUSETWO   |
+                    | WAREHOUSETHREE |
+                    | WAREHOUSEFOUR  |
+                    | WAREHOUSEFIVE  |
+                    | WAREHOUSESIX   |
+                    | WAREHOUSESEVEN |
+                    +----------------+
+
+                -- Результат запиту:
+
+                    SELECT LOWER(Name) FROM Warehouse;
+
+                    +----------------+
+                    | LOWER(Name)    |
+                    +----------------+
+                    | warehouseone   |
+                    | warehousetwo   |
+                    | warehousethree |
+                    | warehousefour  |
+                    | warehousefive  |
+                    | warehousesix   |
+                    | warehouseseven |
+                    +----------------+
+
+--      d. запит з використанням функцій для роботи з датами;
+
+
+
+--      e. запит з використанням групування по декільком стовпцям;
+            
+            -- Таблиця ліків, способу приготування та складу
+
+
+                SELECT
+                    Medicine.Name AS med,
+                    PreparationType.Name AS type,
+                    Storage.Name AS storage
+                FROM Medicine
+                INNER JOIN
+                    StorageMedicine
+                ON
+                    Medicine.MedicineID = StorageMedicine.MedicineID
+                INNER JOIN
+                    Storage
+                ON
+                    Storage.StorageID = StorageMedicine.StorageID
+                INNER JOIN
+                    PreparationType
+                ON
+                    PreparationType.PreparationID = Medicine.PreparationID;
+
+                +------------+---------------+--------------+
+                | med        | type          | storage      |
+                +------------+---------------+--------------+
+                | Macert     | Carbonization | StorageSix   |
+                | Macert     | Carbonization | StorageSeven |
+                | Tealoz Duo | Cancerezation | StorageOne   |
+                | Tealoz Duo | Cancerezation | StorageThree |
+                | Tealoz Duo | Cancerezation | StorageFour  |
+                | Tealoz Duo | Cancerezation | StorageSix   |
+                | Tealoz Duo | Cancerezation | StorageSeven |
+                | Riamot     | Cancerezation | StorageOne   |
+                | Riamot     | Cancerezation | StorageFive  |
+                | Riamot     | Cancerezation | StorageSeven |
+                | Laplas     | Pressuring    | StorageThree |
+                | Laplas     | Pressuring    | StorageSeven |
+                | APlus      | Pressuring    | StorageSix   |
+                | PanzerLac  | Solarization  | StorageTwo   |
+                | PanzerLac  | Solarization  | StorageFour  |
+                | PanzerLac  | Solarization  | StorageSix   |
+                | StarWater  | Solarization  | StorageThree |
+                +------------+---------------+--------------+
+
+            -- Згрупуємо поля за типом та сховищем
+
+                SELECT
+                    GROUP_CONCAT(Medicine.Name) as names,
+                    PreparationType.Name as type,
+                    Storage.Name AS storage
+                FROM Medicine
+                INNER JOIN
+                    StorageMedicine
+                ON
+                    Medicine.MedicineID = StorageMedicine.MedicineID
+                INNER JOIN
+                    Storage
+                ON
+                    Storage.StorageID = StorageMedicine.StorageID
+                INNER JOIN
+                    PreparationType
+                ON
+                    PreparationType.PreparationID = Medicine.PreparationID
+                GROUP BY
+                    Storage.StorageID,
+                    PreparationType.PreparationID;
+
+                +-------------------+---------------+--------------+
+                | names             | type          | storage      |
+                +-------------------+---------------+--------------+
+                | Tealoz Duo,Riamot | Cancerezation | StorageOne   |
+                | PanzerLac         | Solarization  | StorageTwo   |
+                | Tealoz Duo        | Cancerezation | StorageThree |
+                | Laplas            | Pressuring    | StorageThree |
+                | StarWater         | Solarization  | StorageThree |
+                | Tealoz Duo        | Cancerezation | StorageFour  |
+                | PanzerLac         | Solarization  | StorageFour  |
+                | Riamot            | Cancerezation | StorageFive  |
+                | Macert            | Carbonization | StorageSix   |
+                | Tealoz Duo        | Cancerezation | StorageSix   |
+                | APlus             | Pressuring    | StorageSix   |
+                | PanzerLac         | Solarization  | StorageSix   |
+                | Macert            | Carbonization | StorageSeven |
+                | Riamot,Tealoz Duo | Cancerezation | StorageSeven |
+                | Laplas            | Pressuring    | StorageSeven |
+                +-------------------+---------------+--------------+
+
+--      f. запит з використанням умови відбору груп HAVING;
+            
+            -- Таблиця ліків, способу приготування та складу:
+
+                SELECT
+                    Medicine.Name AS med,
+                    Medicine.TotalQuantity as quantity,
+                    PreparationType.Name AS type,
+                    Storage.Name AS storage
+                FROM Medicine
+                INNER JOIN
+                    StorageMedicine
+                ON
+                    Medicine.MedicineID = StorageMedicine.MedicineID
+                INNER JOIN
+                    Storage
+                ON
+                    Storage.StorageID = StorageMedicine.StorageID
+                INNER JOIN
+                    PreparationType
+                ON
+                    PreparationType.PreparationID = Medicine.PreparationID;
+
+                +------------+----------+---------------+--------------+
+                | med        | quantity | type          | storage      |
+                +------------+----------+---------------+--------------+
+                | Macert     |       70 | Carbonization | StorageSix   |
+                | Macert     |       70 | Carbonization | StorageSeven |
+                | Tealoz Duo |       35 | Cancerezation | StorageOne   |
+                | Tealoz Duo |       35 | Cancerezation | StorageThree |
+                | Tealoz Duo |       35 | Cancerezation | StorageFour  |
+                | Tealoz Duo |       35 | Cancerezation | StorageSix   |
+                | Tealoz Duo |       35 | Cancerezation | StorageSeven |
+                | Riamot     |       40 | Cancerezation | StorageOne   |
+                | Riamot     |       40 | Cancerezation | StorageFive  |
+                | Riamot     |       40 | Cancerezation | StorageSeven |
+                | Laplas     |       50 | Pressuring    | StorageThree |
+                | Laplas     |       50 | Pressuring    | StorageSeven |
+                | APlus      |       45 | Pressuring    | StorageSix   |
+                | PanzerLac  |      120 | Solarization  | StorageTwo   |
+                | PanzerLac  |      120 | Solarization  | StorageFour  |
+                | PanzerLac  |      120 | Solarization  | StorageSix   |
+                | StarWater  |       87 | Solarization  | StorageThree |
+                +------------+----------+---------------+--------------+
+
+
+            -- Згрупуємо поля за типом та сховищем, за умовою що тип буде Cancerezation
+
+                SELECT
+                    GROUP_CONCAT(Medicine.Name) as names,
+                    PreparationType.Name as type,
+                    Storage.Name AS storage
+                FROM Medicine
+                INNER JOIN
+                    StorageMedicine
+                ON
+                    Medicine.MedicineID = StorageMedicine.MedicineID
+                INNER JOIN
+                    Storage
+                ON
+                    Storage.StorageID = StorageMedicine.StorageID
+                INNER JOIN
+                    PreparationType
+                ON
+                    PreparationType.PreparationID = Medicine.PreparationID
+                GROUP BY
+                    Storage.StorageID,
+                    PreparationType.PreparationID
+                HAVING PreparationType.Name = 'Cancerezation';
+
+                +-------------------+---------------+--------------+
+                | names             | type          | storage      |
+                +-------------------+---------------+--------------+
+                | Riamot            | Cancerezation | StorageFive  |
+                | Riamot,Tealoz Duo | Cancerezation | StorageSeven |
+                | Tealoz Duo        | Cancerezation | StorageFour  |
+                | Tealoz Duo        | Cancerezation | StorageSix   |
+                | Tealoz Duo        | Cancerezation | StorageThree |
+                | Tealoz Duo,Riamot | Cancerezation | StorageOne   |
+                +-------------------+---------------+--------------+
+
+--      g. запит з використанням HAVING без GROUP BY;
+
+            -- уся таблиця:
+
+                SELECT Name, MedicineID FROM Medicine;
+
+                +-------------+------------+
+                | Name        | MedicineID |
+                +-------------+------------+
+                | Tealoz Duo  |          1 |
+                | PanzerLac   |          2 |
+                | Laplas      |          3 |
+                | Riamot      |          4 |
+                | Macert      |          5 |
+                | APlus       |          6 |
+                | StarWater   |          7 |
+                | AntiTrauma  |          8 |
+                | RedLight    |          9 |
+                | ClassFoster |         10 |
+                +-------------+------------+
+            
+            -- Відбиремо ліки, де ід == 2:
+
+                SELECT Name, MedicineID FROM Medicine HAVING MedicineID = 2;
+
+                +-----------+------------+
+                | Name      | MedicineID |
+                +-----------+------------+
+                | PanzerLac |          2 |
+                +-----------+------------+
+
+--      h. запит з використанням функцій row_number() over ….;
+
+            -- відсортуємо сховища за кількістю ліків, що вони містять
+
+                SELECT
+                    sub.storage,
+                    sub.total,
+                    ROW_NUMBER() OVER (
+                        ORDER BY sub.total DESC
+                    ) AS position
+                FROM (
+                    SELECT
+                        Storage.Name AS storage,
+                        SUM(Medicine.TotalQuantity) as total
+                    FROM Medicine
+                    INNER JOIN
+                        StorageMedicine
+                    ON
+                        Medicine.MedicineID = StorageMedicine.MedicineID
+                    INNER JOIN
+                        Storage
+                    ON
+                        Storage.StorageID = StorageMedicine.StorageID
+                    INNER JOIN
+                        PreparationType
+                    ON
+                        PreparationType.PreparationID = Medicine.PreparationID
+                    GROUP BY
+                        Storage.StorageID
+                ) AS sub;
+
+            +--------------+-------+----------+
+            | storage      | total | position |
+            +--------------+-------+----------+
+            | StorageSix   |   270 |        1 |
+            | StorageSeven |   195 |        2 |
+            | StorageThree |   172 |        3 |
+            | StorageFour  |   155 |        4 |
+            | StorageTwo   |   120 |        5 |
+            | StorageOne   |    75 |        6 |
+            | StorageFive  |    40 |        7 |
+            +--------------+-------+----------+
+
+
+--      i. запит з використанням сортування по декільком стовпцям.
+
+        -- Відсортуємо ліки спочатку за загальною кількістю, а потім за критичною
+        -- Вставиво ще декілька ліків для наглядності
+
+            INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Cardiofit", 4, 40, 7, 3);
+            INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("RDev", 4, 40, 5, 3);
+            INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Solar", 4, 40, 2, 3);
+            INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Vamicol", 4, 40, 3, 3);
+
+            SELECT
+                Name,
+                TotalQuantity,
+                CriticalQuantity
+            FROM 
+                Medicine
+            ORDER BY
+                TotalQuantity DESC,
+                CriticalQuantity DESC;
+
+            +-------------+---------------+------------------+
+            | Name        | TotalQuantity | CriticalQuantity |
+            +-------------+---------------+------------------+
+            | PanzerLac   |           120 |               19 |
+            | StarWater   |            87 |                4 |
+            | Macert      |            70 |               15 |
+            | Laplas      |            50 |                2 |
+            | APlus       |            45 |                5 |
+            | Riamot      |            40 |               12 |
+            | Cardiofit   |            40 |                7 |
+            | RDev        |            40 |                5 |
+            | Vamicol     |            40 |                3 |
+            | Solar       |            40 |                2 |
+            | Tealoz Duo  |            35 |                2 |
+            | ClassFoster |             9 |                4 |
+            | AntiTrauma  |             7 |                4 |
+            | RedLight    |             5 |                4 |
+            +-------------+---------------+------------------+
+
+
+--  2) Робота з представленнями (view):
+--      a. створити представлення, котре містить дані з декількох таблиць;
+
+            -- доповнимо таблицю для наглядності
+
+
+            
+            -- дізнаємося для яких пацієнтів
+            -- і з яких сховищ їм можна дістати замовлені ліки певної назви певного типу
+
+            CREATE VIEW viewOne (
+                pacName,
+                med,
+                prepType,
+                storage
+            ) AS SELECT
+                    ord.PacientFullName AS pacName,
+                    med.Name AS medicine,
+                    t.Name AS prepType,
+                    st.Name AS storage
+                FROM
+                    Orders AS ord 
+                INNER JOIN OrdersMedicine AS ordmed
+                ON
+                    ordmed.OrdersID = ord.OrdersID
+                INNER JOIN Medicine AS med
+                ON
+                    ordmed.MedicineID = med.MedicineID
+                INNER JOIN StorageMedicine AS stmed
+                ON
+                    stmed.MedicineID = med.MedicineID
+                INNER JOIN Storage AS st
+                ON
+                    st.StorageID = stmed.StorageID
+                INNER JOIN PreparationType AS t
+                ON
+                    med.PreparationID = t.PreparationID;
+
+            SELECT * FROM viewOne;
+            +----------------+------------+---------------+--------------+
+            | pacName        | med        | prepType      | storage      |
+            +----------------+------------+---------------+--------------+
+            | Luigi Mario    | Macert     | Carbonization | StorageSix   |
+            | Luigi Mario    | Macert     | Carbonization | StorageSeven |
+            | Betsy White    | Macert     | Carbonization | StorageSix   |
+            | Betsy White    | Macert     | Carbonization | StorageSeven |
+            | The Narrator   | Tealoz Duo | Cancerezation | StorageOne   |
+            | The Narrator   | Tealoz Duo | Cancerezation | StorageThree |
+            | The Narrator   | Tealoz Duo | Cancerezation | StorageFour  |
+            | The Narrator   | Tealoz Duo | Cancerezation | StorageSix   |
+            | The Narrator   | Tealoz Duo | Cancerezation | StorageSeven |
+            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageOne   |
+            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageThree |
+            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageFour  |
+            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageSix   |
+            | Luigi Mario    | Tealoz Duo | Cancerezation | StorageSeven |
+            | Betsy White    | Riamot     | Cancerezation | StorageOne   |
+            | Betsy White    | Riamot     | Cancerezation | StorageFive  |
+            | Betsy White    | Riamot     | Cancerezation | StorageSeven |
+            | Terminator     | Riamot     | Cancerezation | StorageOne   |
+            | Terminator     | Riamot     | Cancerezation | StorageFive  |
+            | Terminator     | Riamot     | Cancerezation | StorageSeven |
+            | Walter White   | Laplas     | Pressuring    | StorageThree |
+            | Walter White   | Laplas     | Pressuring    | StorageSeven |
+            | The Narrator   | APlus      | Pressuring    | StorageSix   |
+            | Luigi Mario    | APlus      | Pressuring    | StorageSix   |
+            | The Narrator   | PanzerLac  | Solarization  | StorageTwo   |
+            | The Narrator   | PanzerLac  | Solarization  | StorageFour  |
+            | The Narrator   | PanzerLac  | Solarization  | StorageSix   |
+            | Betsy White    | PanzerLac  | Solarization  | StorageTwo   |
+            | Betsy White    | PanzerLac  | Solarization  | StorageFour  |
+            | Betsy White    | PanzerLac  | Solarization  | StorageSix   |
+            | Vlad Golovatuk | PanzerLac  | Solarization  | StorageTwo   |
+            | Vlad Golovatuk | PanzerLac  | Solarization  | StorageFour  |
+            | Vlad Golovatuk | PanzerLac  | Solarization  | StorageSix   |
+            +----------------+------------+---------------+--------------+
+
+--      b. створити представлення, котре містить дані з декількох таблиць та
+--          використовує представлення, котре створене в п.a;
+            
+            --  Згрупуємо поля з першого представлення за складами,
+            --  підрахувавши кількість пацієнтів, які потребують ліки,
+            --  які знаходяться у певному складі
+
+                CREATE VIEW viewTwo (
+                    number,
+                    storage
+                ) AS SELECT
+                        COUNT(pacName),
+                        storage
+                    FROM viewOne
+                    GROUP BY
+                        storage; 
+
+                SELECT * FROM viewTwo;
+                +--------+--------------+
+                | number | storage      |
+                +--------+--------------+
+                |      9 | StorageSix   |
+                |      7 | StorageSeven |
+                |      4 | StorageOne   |
+                |      3 | StorageThree |
+                |      5 | StorageFour  |
+                |      2 | StorageFive  |
+                |      3 | StorageTwo   |
+                +--------+--------------+
+
+--      c. модифікувати представлення з використанням команди ALTER VIEW;
+
+
+
+--      d. отримати довідникову інформацію про ці представлення з
+--          використанням вбудованих процедур (наприклад в MsSQL sp_help,
+--          sp_helptext та sp_depends).
+        
+            -- застосуємо DESC:
+
+                DESC viewOne;
+                +----------+-------------+------+-----+---------+-------+
+                | Field    | Type        | Null | Key | Default | Extra |
+                +----------+-------------+------+-----+---------+-------+
+                | pacName  | varchar(40) | NO   |     | NULL    |       |
+                | med      | varchar(40) | NO   |     | NULL    |       |
+                | prepType | varchar(40) | NO   |     | NULL    |       |
+                | storage  | varchar(40) | NO   |     | NULL    |       |
+                +----------+-------------+------+-----+---------+-------+
+
+                DESC viewTwo;
+                +---------+-------------+------+-----+---------+-------+
+                | Field   | Type        | Null | Key | Default | Extra |
+                +---------+-------------+------+-----+---------+-------+
+                | number  | bigint      | NO   |     | 0       |       |
+                | storage | varchar(40) | NO   |     | NULL    |       |
+                +---------+-------------+------+-----+---------+-------+
+
+                SELECT table_name, is_updatable FROM information_schema.Views LIMIT 2;
+
+                    --  Бачимо, що друге представлення оновити не можна, бо застосовували
+                    --  агрегуючі функції
+                    
+                +------------+--------------+
+                | TABLE_NAME | IS_UPDATABLE |
+                +------------+--------------+
+                | viewOne    | YES          |
+                | viewTwo    | NO           |
+                +------------+--------------+
+
+
+
+
+

@@ -493,21 +493,21 @@
                     ) AS FoundsIn
                 FROM Medicine
                 INNER JOIN StorageMedicine
-                    ON Medicine.MedicineID = StorageMedicine.StorageID
+                    ON Medicine.MedicineID = StorageMedicine.MedicineID
                 INNER JOIN Storage
                     ON Storage.StorageID = StorageMedicine.StorageID;
 
-                    +---------------------------------+
-                    | FoundsIn                        |
-                    +---------------------------------+
-                    | Tealoz Duo founds in StorageOne |
-                    | Tealoz Duo founds in StorageOne |
-                    | PanzerLac founds in StorageTwo  |
-                    | Laplas founds in StorageThree   |
-                    | Riamot founds in StorageFour    |
-                    | Riamot founds in StorageFour    |
-                    | Macert founds in StorageFive    |
-                    +---------------------------------+
+                +----------------------------------+
+                | FoundsIn                         |
+                +----------------------------------+
+                | Tealoz Duo founds in StorageOne  |
+                | PanzerLac founds in StorageTwo   |
+                | Laplas founds in StorageThree    |
+                | PanzerLac founds in StorageFour  |
+                | Tealoz Duo founds in StorageFour |
+                | Riamot founds in StorageFive     |
+                | Riamot founds in StorageOne      |
+                +----------------------------------+
 
             --Результат запиту:
 
@@ -763,7 +763,7 @@
                 INNER JOIN
                     StorageMedicine
                 ON
-                    Medicine.MedicineID = StorageMedicine.StorageID
+                    Medicine.MedicineID = StorageMedicine.MedicineID
                 INNER JOIN
                     Storage
                 ON
@@ -773,13 +773,14 @@
                 | Name       | Name         |
                 +------------+--------------+
                 | Tealoz Duo | StorageOne   |
-                | Tealoz Duo | StorageOne   |
                 | PanzerLac  | StorageTwo   |
                 | Laplas     | StorageThree |
-                | Riamot     | StorageFour  |
-                | Riamot     | StorageFour  |
-                | Macert     | StorageFive  |
+                | PanzerLac  | StorageFour  |
+                | Tealoz Duo | StorageFour  |
+                | Riamot     | StorageFive  |
+                | Riamot     | StorageOne   |
                 +------------+--------------+
+
 
 -- 		g. Лівого зовнішнього з’єднання
 
