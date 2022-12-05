@@ -188,131 +188,156 @@
 
 --  1) Створити наступні запити:
 --      a. запит з використанням функції COUNT;
+            
+            -- Опис:
+                --  Підрахуємо кількість ліків, що має аптека:
 
---          Підрахуємо кількість ліків, що має аптека:
+            -- Уся таблиця:
 
-                -- Уся таблиця:
+                SELECT Name FROM Medicine;
 
-                    SELECT Name FROM Medicine;
+                -- +-------------+
+                -- | Name        |
+                -- +-------------+
+                -- | Tealoz Duo  |
+                -- | PanzerLac   |
+                -- | Laplas      |
+                -- | Riamot      |
+                -- | Macert      |
+                -- | APlus       |
+                -- | StarWater   |
+                -- | AntiTrauma  |
+                -- | RedLight    |
+                -- | ClassFoster |
+                -- +-------------+
 
-                    -- +-------------+
-                    -- | Name        |
-                    -- +-------------+
-                    -- | Tealoz Duo  |
-                    -- | PanzerLac   |
-                    -- | Laplas      |
-                    -- | Riamot      |
-                    -- | Macert      |
-                    -- | APlus       |
-                    -- | StarWater   |
-                    -- | AntiTrauma  |
-                    -- | RedLight    |
-                    -- | ClassFoster |
-                    -- +-------------+
+            -- Результат запиту:
 
-                -- Результат запиту:
+                SELECT COUNT(*) AS TotalNumberOfMedicine FROM Medicine;
 
-                    SELECT COUNT(*) AS TotalNumberOfMedicine FROM Medicine;
-
-                    -- +-----------------------+
-                    -- | TotalNumberOfMedicine |
-                    -- +-----------------------+
-                    -- |                    10 |
-                    -- +-----------------------+
+                -- +-----------------------+
+                -- | TotalNumberOfMedicine |
+                -- +-----------------------+
+                -- |                    10 |
+                -- +-----------------------+
 
 --      b. запит з використанням функції SUM;
             
-            -- Підрахуємо загальну кількість одиниць ліків:
+            -- Опис:
+                -- Підрахуємо загальну кількість одиниць ліків:
 
-                -- Уся таблиця:
+            -- Уся таблиця:
 
-                    SELECT Name, TotalQuantity FROM Medicine;
+                SELECT Name, TotalQuantity FROM Medicine;
 
-                    -- +-------------+---------------+
-                    -- | Name        | TotalQuantity |
-                    -- +-------------+---------------+
-                    -- | Tealoz Duo  |            35 |
-                    -- | PanzerLac   |           120 |
-                    -- | Laplas      |            50 |
-                    -- | Riamot      |            40 |
-                    -- | Macert      |            70 |
-                    -- | APlus       |            45 |
-                    -- | StarWater   |            87 |
-                    -- | AntiTrauma  |             7 |
-                    -- | RedLight    |             5 |
-                    -- | ClassFoster |             9 |
-                    -- +-------------+---------------+
+                -- +-------------+---------------+
+                -- | Name        | TotalQuantity |
+                -- +-------------+---------------+
+                -- | Tealoz Duo  |            35 |
+                -- | PanzerLac   |           120 |
+                -- | Laplas      |            50 |
+                -- | Riamot      |            40 |
+                -- | Macert      |            70 |
+                -- | APlus       |            45 |
+                -- | StarWater   |            87 |
+                -- | AntiTrauma  |             7 |
+                -- | RedLight    |             5 |
+                -- | ClassFoster |             9 |
+                -- +-------------+---------------+
 
-                -- Результат запиту:
+            -- Результат запиту:
 
-                    SELECT SUM(TotalQuantity) AS TotalTotalQuantity FROM Medicine;
+                SELECT SUM(TotalQuantity) AS TotalTotalQuantity FROM Medicine;
 
-                    -- +--------------------+
-                    -- | TotalTotalQuantity |
-                    -- +--------------------+
-                    -- |                468 |
-                    -- +--------------------+
+                -- +--------------------+
+                -- | TotalTotalQuantity |
+                -- +--------------------+
+                -- |                468 |
+                -- +--------------------+
 
 --      c. запит з використанням функцій UPPER, LOWER;
             
-            -- Відобразимо ім'я складів великими та маленькими буквами
+            -- Опис:
+                -- Відобразимо ім'я складів великими та маленькими буквами
 
-                -- Уся таблиця:
+            -- Уся таблиця:
 
-                    SELECT Name FROM Warehouse;
+                SELECT Name FROM Warehouse;
 
-                    -- +----------------+
-                    -- | Name           |
-                    -- +----------------+
-                    -- | WarehouseOne   |
-                    -- | WarehouseTwo   |
-                    -- | WarehouseThree |
-                    -- | WarehouseFour  |
-                    -- | WarehouseFive  |
-                    -- | WarehouseSix   |
-                    -- | WarehouseSeven |
-                    -- +----------------+
+                -- +----------------+
+                -- | Name           |
+                -- +----------------+
+                -- | WarehouseOne   |
+                -- | WarehouseTwo   |
+                -- | WarehouseThree |
+                -- | WarehouseFour  |
+                -- | WarehouseFive  |
+                -- | WarehouseSix   |
+                -- | WarehouseSeven |
+                -- +----------------+
 
-                -- Результат запиту:
+            -- Результат запиту:
 
-                    SELECT UPPER(Name) FROM Warehouse;
+                SELECT UPPER(Name) FROM Warehouse;
 
-                    -- +----------------+
-                    -- | UPPER(Name)    |
-                    -- +----------------+
-                    -- | WAREHOUSEONE   |
-                    -- | WAREHOUSETWO   |
-                    -- | WAREHOUSETHREE |
-                    -- | WAREHOUSEFOUR  |
-                    -- | WAREHOUSEFIVE  |
-                    -- | WAREHOUSESIX   |
-                    -- | WAREHOUSESEVEN |
-                    -- +----------------+
+                -- +----------------+
+                -- | UPPER(Name)    |
+                -- +----------------+
+                -- | WAREHOUSEONE   |
+                -- | WAREHOUSETWO   |
+                -- | WAREHOUSETHREE |
+                -- | WAREHOUSEFOUR  |
+                -- | WAREHOUSEFIVE  |
+                -- | WAREHOUSESIX   |
+                -- | WAREHOUSESEVEN |
+                -- +----------------+
 
-                -- Результат запиту:
+            -- Результат запиту:
 
-                    SELECT LOWER(Name) FROM Warehouse;
+                SELECT LOWER(Name) FROM Warehouse;
 
-                    -- +----------------+
-                    -- | LOWER(Name)    |
-                    -- +----------------+
-                    -- | warehouseone   |
-                    -- | warehousetwo   |
-                    -- | warehousethree |
-                    -- | warehousefour  |
-                    -- | warehousefive  |
-                    -- | warehousesix   |
-                    -- | warehouseseven |
-                    -- +----------------+
+                -- +----------------+
+                -- | LOWER(Name)    |
+                -- +----------------+
+                -- | warehouseone   |
+                -- | warehousetwo   |
+                -- | warehousethree |
+                -- | warehousefour  |
+                -- | warehousefive  |
+                -- | warehousesix   |
+                -- | warehouseseven |
+                -- +----------------+
 
 --      d. запит з використанням функцій для роботи з датами;
 
+            -- Опис:
+                -- Визначимо ім'я пацієнта, лікаря та місяця,
+                -- коли було видано направлення
 
+                SELECT 
+                    DoctorFullName AS Doctor,
+                    PacientFullName AS Pacient,
+                    EXTRACT(MONTH FROM PreparationDate)
+                FROM Orders;
+
+                -- +------------------+----------------+-------------------------------------+
+                -- | Doctor           | Pacient        | EXTRACT(MONTH FROM PreparationDate) |
+                -- +------------------+----------------+-------------------------------------+
+                -- | Tyler Durden     | The Narrator   |                                  10 |
+                -- | Saul Goodman     | Walter White   |                                  11 |
+                -- | Trevis Bickle    | Betsy White    |                                   1 |
+                -- | Mario Mario      | Luigi Mario    |                                  11 |
+                -- | Robocop          | Terminator     |                                   4 |
+                -- | Serhii Panchenko | Natalia Cegla  |                                   4 |
+                -- | Yurii Riabov     | Vlad Golovatuk |                                  11 |
+                -- | Dmytro Tarasonok | Vano Sheet     |                                  11 |
+                -- | Kyrylo Sidak     | Kipish SMS     |                                   4 |
+                -- +------------------+----------------+-------------------------------------+
 
 --      e. запит з використанням групування по декільком стовпцям;
-            
-            -- Таблиця ліків, способу приготування та складу
 
+            -- Таблиця ліків, типу їхнього приготування та складу,
+            -- де вони знаходяться
 
                 SELECT
                     Medicine.Name AS med,
@@ -354,7 +379,11 @@
                 -- | StarWater  | Solarization  | StorageThree |
                 -- +------------+---------------+--------------+
 
-            -- Згрупуємо поля за типом та сховищем
+            
+
+            -- Опис:
+                -- Згрупуємо ліки за типом приготування та складом,
+                -- у якому вони знаходяться
 
                 SELECT
                     GROUP_CONCAT(Medicine.Name) as names,
@@ -399,7 +428,8 @@
 
 --      f. запит з використанням умови відбору груп HAVING;
             
-            -- Таблиця ліків, способу приготування та складу:
+            -- Таблиця ліків, способу приготування, загальнлї кількості ліків
+            -- та складу, у якому вони знаходяться:
 
                 SELECT
                     Medicine.Name AS med,
@@ -442,8 +472,10 @@
                 -- | StarWater  |       87 | Solarization  | StorageThree |
                 -- +------------+----------+---------------+--------------+
 
-
-            -- Згрупуємо поля за типом та сховищем, за умовою що тип буде Cancerezation
+            -- Опис:
+                -- Згрупуємо ліки за типом приготування та сховищем,
+                -- за умовою що тип буде Cancerezation
+            
 
                 SELECT
                     GROUP_CONCAT(Medicine.Name) as names,
@@ -499,7 +531,8 @@
                 -- | ClassFoster |         10 |
                 -- +-------------+------------+
             
-            -- Відбиремо ліки, де ід == 2:
+            -- Опис:
+                -- Випищемо ті ліки, які мають ID = 2
 
                 SELECT Name, MedicineID FROM Medicine HAVING MedicineID = 2;
 
@@ -511,7 +544,9 @@
 
 --      h. запит з використанням функцій row_number() over ….;
 
-            -- відсортуємо сховища за кількістю ліків, що вони містять
+            -- Опис:
+                -- Відсортуємо сховища за кількістю ліків, що вони містять,
+                -- виписавши позицію в рейтингу за кількістю
 
                 SELECT
                     sub.storage,
@@ -555,8 +590,9 @@
 
 --      i. запит з використанням сортування по декільком стовпцям.
 
-        -- Відсортуємо ліки спочатку за загальною кількістю, а потім за критичною
-        -- Вставиво ще декілька ліків для наглядності
+        -- Опис:
+            -- Відсортуємо ліки спочатку за загальною кількістю, а потім за критичною
+            -- Вставиво ще декілька ліків для наглядності
 
             INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Cardiofit", 4, 40, 7, 3);
             INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("RDev", 4, 40, 5, 3);
@@ -594,14 +630,13 @@
 
 
 --  2) Робота з представленнями (view):
+
 --      a. створити представлення, котре містить дані з декількох таблиць;
 
-            -- доповнимо таблицю для наглядності
-
-
+            -- Опис:
+                -- Утворимо представлення, де випишемо для яких пацієнтів
+                -- і з яких сховищ їм можна дістати замовлені ліки певної назви певного типу
             
-            -- дізнаємося для яких пацієнтів
-            -- і з яких сховищ їм можна дістати замовлені ліки певної назви певного типу
 
             CREATE VIEW viewOne (
                 pacName,
@@ -673,9 +708,10 @@
 --      b. створити представлення, котре містить дані з декількох таблиць та
 --          використовує представлення, котре створене в п.a;
             
-            --  Згрупуємо поля з першого представлення за складами,
-            --  підрахувавши кількість пацієнтів, які потребують ліки,
-            --  які знаходяться у певному складі
+            -- Опис:
+                --  Згрупуємо поля з першого представлення за складами,
+                --  підрахувавши кількість пацієнтів, які потребують ліки,
+                --  які знаходяться у певному складі
 
                 CREATE VIEW viewTwo (
                     number,
@@ -702,13 +738,71 @@
 
 --      c. модифікувати представлення з використанням команди ALTER VIEW;
 
+            -- Опис:
+                -- Змінимо перше представлення, де випишемо для яких пацієнтів
+                -- і з яких сховищ їм можна дістати замовлені ліки певної назви певного типу,
+                -- за умовою, що тип приготування ліків "Cancerezation"
+
+            ALTER VIEW viewOne (
+                pacName,
+                med,
+                prepType,
+                storage
+            ) AS SELECT
+                    ord.PacientFullName AS pacName,
+                    med.Name AS medicine,
+                    t.Name AS prepType,
+                    st.Name AS storage
+                FROM
+                    Orders AS ord 
+                INNER JOIN OrdersMedicine AS ordmed
+                ON
+                    ordmed.OrdersID = ord.OrdersID
+                INNER JOIN Medicine AS med
+                ON
+                    ordmed.MedicineID = med.MedicineID
+                INNER JOIN StorageMedicine AS stmed
+                ON
+                    stmed.MedicineID = med.MedicineID
+                INNER JOIN Storage AS st
+                ON
+                    st.StorageID = stmed.StorageID
+                INNER JOIN PreparationType AS t
+                ON
+                    med.PreparationID = t.PreparationID
+                WHERE t.Name = "Cancerezation";
+
+            SELECT * FROM viewOne;
+
+            -- +--------------+------------+---------------+--------------+
+            -- | pacName      | med        | prepType      | storage      |
+            -- +--------------+------------+---------------+--------------+
+            -- | Luigi Mario  | Tealoz Duo | Cancerezation | StorageOne   |
+            -- | The Narrator | Tealoz Duo | Cancerezation | StorageOne   |
+            -- | Terminator   | Riamot     | Cancerezation | StorageOne   |
+            -- | Betsy White  | Riamot     | Cancerezation | StorageOne   |
+            -- | Luigi Mario  | Tealoz Duo | Cancerezation | StorageThree |
+            -- | The Narrator | Tealoz Duo | Cancerezation | StorageThree |
+            -- | Luigi Mario  | Tealoz Duo | Cancerezation | StorageFour  |
+            -- | The Narrator | Tealoz Duo | Cancerezation | StorageFour  |
+            -- | Terminator   | Riamot     | Cancerezation | StorageFive  |
+            -- | Betsy White  | Riamot     | Cancerezation | StorageFive  |
+            -- | Luigi Mario  | Tealoz Duo | Cancerezation | StorageSix   |
+            -- | The Narrator | Tealoz Duo | Cancerezation | StorageSix   |
+            -- | Luigi Mario  | Tealoz Duo | Cancerezation | StorageSeven |
+            -- | The Narrator | Tealoz Duo | Cancerezation | StorageSeven |
+            -- | Terminator   | Riamot     | Cancerezation | StorageSeven |
+            -- | Betsy White  | Riamot     | Cancerezation | StorageSeven |
+            -- +--------------+------------+---------------+--------------+
+
 
 
 --      d. отримати довідникову інформацію про ці представлення з
 --          використанням вбудованих процедур (наприклад в MsSQL sp_help,
 --          sp_helptext та sp_depends).
         
-            -- застосуємо DESC:
+            -- Опис:
+                -- застосуємо DESC:
 
                 DESC viewOne;
                 -- +----------+-------------+------+-----+---------+-------+
