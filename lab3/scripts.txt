@@ -162,6 +162,10 @@
 -- 1) Створити запити для вибірки даних з використанням (разом 12 запитів):
 
 -- 	a. Найпростіших умов
+        
+        -- Опис:
+            -- Визначимо назву ліків, ID яких = 2
+
 		SELECT Name, MedicineID FROM Medicine WHERE MedicineID = 2;
 
             --Усі поля таблиці:
@@ -195,6 +199,9 @@
 
 
 -- 	b. Операторів порівняння
+
+        -- Опис:
+            -- Визначимо назву сховищ, ID яких більше 2
     
         SELECT Name, StorageID FROM Storage WHERE StorageID > 2;
 
@@ -248,6 +255,8 @@
 
         --Результат запиту:
 
+        -- Опис:
+            -- Визначимо ім'я лікаря, пацієнта, ID замовлення, ID яких більше 1 ТА менше 3
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders WHERE OrdersID > 1 AND OrdersID < 3;
 
@@ -258,6 +267,9 @@
             -- +----------------+-----------------+----------+
 
         --Результат запиту:
+
+        -- Опис:
+            -- Визначимо ім'я лікаря, пацієнта, ID замовлення, ID яких менше дорівнює 1 АБО більше дорівнює 3
 
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders WHERE OrdersID <= 1 OR OrdersID >= 3;
@@ -272,6 +284,9 @@
             -- +----------------+-----------------+----------+
 
         --Результат запиту:
+
+        -- Опис:
+            -- Визначимо ім'я лікаря, пацієнта, ID замовлення, ID яких НЕ дорівнює 3
 
             SELECT DoctorFullName, PacientFullName, OrdersID FROM Orders WHERE NOT OrdersID=3;
 
@@ -308,6 +323,10 @@
 
         --Результат запиту:
 
+            -- Опис:
+                -- Визначимо назву ліків, кількість куплених одиниць, загальну кількість ,
+                -- де НЕ виконується умова, що загальна кількість більше 35 ТА куплена кільксть менше 10
+
             SELECT Name, TotalBought, TotalQuantity FROM Medicine WHERE NOT (TotalQuantity > 35 AND TotalBought < 10);
 
             -- +-------------+-------------+---------------+
@@ -319,6 +338,10 @@
             -- | RedLight    |           2 |             5 |
             -- | ClassFoster |           2 |             9 |
             -- +-------------+-------------+---------------+
+
+            -- Опис:
+                -- Визначимо назву ліків, кількість куплених одиниць, загальну кількість ,
+                -- де НЕ загальна кількість більше 35 АБО НЕ куплена кільксть менше 10
 
 
             SELECT Name, TotalBought, TotalQuantity FROM Medicine WHERE (NOT TotalQuantity > 35) OR (NOT TotalBought < 10);
@@ -337,7 +360,9 @@
 -- 	e. З використанням виразів над стовпцями, як в якості новостворених 
 -- 	стовпців, так і умовах
         
-        --Підрахуємо запас ліків:
+        -- Опис:
+            -- Визначимо назву ліків, критичну кількість та запас ліків,
+            -- тобто різницю між загальною кількістю та критичною кількістю
 
             SELECT Name, TotalQuantity, CriticalQuantity, TotalQuantity - CriticalQuantity AS Reserve FROM Medicine;
 
@@ -378,6 +403,10 @@
 
             --Результат запиту:
 
+                -- Опис:
+                    -- Випишемо назву сховища, визначимо його ID, де назва входить
+                    -- до такого переліку: "WarehouseOne", "WarehouseTwo"
+
                 SELECT * FROM Warehouse WHERE Name IN ("WarehouseOne", "WarehouseTwo");
 
                 -- +-------------+--------------+
@@ -404,6 +433,10 @@
                 -- +-----------------+------------+
 
             --Результат запиту:
+
+                -- Опис:
+                    -- Випишемо ім'я пацієнта, його вік, 
+                    -- де вік знаходиться у проміжку від 10 до 40
 
                 SELECT PacientFullName, PacientAge FROM Orders WHERE PacientAge BETWEEN 10 AND 40;
 
@@ -433,18 +466,24 @@
 
             --Результат запиту:
 
-                SELECT PacientFullName FROM Orders WHERE PacientFullName REGEXP '(Ter)|(The)';
+                -- Опис:
+                    -- Випишемо ім'я пацієнта,
+                    -- де ім'я починається на "The"
 
-                -- +-----------------+
-                -- | PacientFullName |
-                -- +-----------------+
-                -- | The Narrator    |
-                -- | Walter White    |
-                -- | Terminator      |
-                -- +-----------------+
+                SELECT PacientFullName FROM Orders WHERE PacientFullName LIKE "The%";
+
+--                  +-----------------+
+--                  | PacientFullName |
+--                  +-----------------+
+--                  | The Narrator    |
+--                  +-----------------+
 
 
 -- 		iv. Перевірка на невизначене значення
+
+            -- Опис:
+                -- Випишемо назву ліків, загально куплену кількість,
+                -- де загальна кількість не вказана (NULL)
 
             --Усі поля таблиці:
 
@@ -484,30 +523,36 @@
 			
             --Результат запиту:
 
-                -- Визначаємо, у яких сховищах знаходяться ліки
+                -- Опис:
+                -- Визначити, які ліки знаходяться в хоча б одному сховищі
 
-    			SELECT CONCAT (
-                    Medicine.Name,
-                    ' founds in ',
-                    Storage.Name
-                    ) AS FoundsIn
-                FROM Medicine
-                INNER JOIN StorageMedicine
-                    ON Medicine.MedicineID = StorageMedicine.MedicineID
-                INNER JOIN Storage
-                    ON Storage.StorageID = StorageMedicine.StorageID;
+    			SELECT 
+                    Medicine.Name AS medname,
+                    (SELECT
+                        Storage.Name
+                    FROM Storage
+                    INNER JOIN StorageMedicine 
+                    ON 
+                        Storage.StorageID = StorageMedicine.StorageID
+                    WHERE
+                        Medicine.MedicineID = StorageMedicine.MedicineID
+                    LIMIT 1) AS storage
+                FROM Medicine;
 
-                -- +----------------------------------+
-                -- | FoundsIn                         |
-                -- +----------------------------------+
-                -- | Tealoz Duo founds in StorageOne  |
-                -- | PanzerLac founds in StorageTwo   |
-                -- | Laplas founds in StorageThree    |
-                -- | PanzerLac founds in StorageFour  |
-                -- | Tealoz Duo founds in StorageFour |
-                -- | Riamot founds in StorageFive     |
-                -- | Riamot founds in StorageOne      |
-                -- +----------------------------------+
+                -- +-------------+--------------+
+                -- | medname     | storage      |
+                -- +-------------+--------------+
+                -- | Tealoz Duo  | StorageOne   |
+                -- | PanzerLac   | StorageTwo   |
+                -- | Laplas      | StorageThree |
+                -- | Riamot      | StorageFive  |
+                -- | Macert      | NULL         |
+                -- | APlus       | NULL         |
+                -- | StarWater   | NULL         |
+                -- | AntiTrauma  | NULL         |
+                -- | RedLight    | NULL         |
+                -- | ClassFoster | NULL         |
+                -- +-------------+--------------+
 
             --Результат запиту:
 
@@ -534,8 +579,10 @@
                     -- +-------------+-----------+
 
 --		b. Використання підзапитів в умовах з конструкціями EXISTS, IN
-			
--- 			Обираємо такі ліки, де ім!я сховища починається з "F":
+
+            -- Опис:
+                -- Визначимо назву ліків та склад, де вони знаходяться,
+                -- де назва склаяду містить літеру "F":		
 
     			SELECT
                     Medicine.Name,
@@ -587,88 +634,94 @@
 
 
 -- 		c. Декартовий добуток
+
+            -- Опис:
+                -- Визначимо усі можливі пари ЛІКИ - СКЛАД 
+
             --Результат запиту:
 
-                SELECT Medicine.Name, Warehouse.Name FROM Medicine JOIN Warehouse;
+                SELECT Medicine.Name, Storage.Name FROM Medicine JOIN Storage;
 
-                -- +-------------+----------------+
-                -- | Name        | Name           |
-                -- +-------------+----------------+
-                -- | Tealoz Duo  | WarehouseSeven |
-                -- | Tealoz Duo  | WarehouseSix   |
-                -- | Tealoz Duo  | WarehouseFive  |
-                -- | Tealoz Duo  | WarehouseFour  |
-                -- | Tealoz Duo  | WarehouseThree |
-                -- | Tealoz Duo  | WarehouseTwo   |
-                -- | Tealoz Duo  | WarehouseOne   |
-                -- | PanzerLac   | WarehouseSeven |
-                -- | PanzerLac   | WarehouseSix   |
-                -- | PanzerLac   | WarehouseFive  |
-                -- | PanzerLac   | WarehouseFour  |
-                -- | PanzerLac   | WarehouseThree |
-                -- | PanzerLac   | WarehouseTwo   |
-                -- | PanzerLac   | WarehouseOne   |
-                -- | Laplas      | WarehouseSeven |
-                -- | Laplas      | WarehouseSix   |
-                -- | Laplas      | WarehouseFive  |
-                -- | Laplas      | WarehouseFour  |
-                -- | Laplas      | WarehouseThree |
-                -- | Laplas      | WarehouseTwo   |
-                -- | Laplas      | WarehouseOne   |
-                -- | Riamot      | WarehouseSeven |
-                -- | Riamot      | WarehouseSix   |
-                -- | Riamot      | WarehouseFive  |
-                -- | Riamot      | WarehouseFour  |
-                -- | Riamot      | WarehouseThree |
-                -- | Riamot      | WarehouseTwo   |
-                -- | Riamot      | WarehouseOne   |
-                -- | Macert      | WarehouseSeven |
-                -- | Macert      | WarehouseSix   |
-                -- | Macert      | WarehouseFive  |
-                -- | Macert      | WarehouseFour  |
-                -- | Macert      | WarehouseThree |
-                -- | Macert      | WarehouseTwo   |
-                -- | Macert      | WarehouseOne   |
-                -- | APlus       | WarehouseSeven |
-                -- | APlus       | WarehouseSix   |
-                -- | APlus       | WarehouseFive  |
-                -- | APlus       | WarehouseFour  |
-                -- | APlus       | WarehouseThree |
-                -- | APlus       | WarehouseTwo   |
-                -- | APlus       | WarehouseOne   |
-                -- | StarWater   | WarehouseSeven |
-                -- | StarWater   | WarehouseSix   |
-                -- | StarWater   | WarehouseFive  |
-                -- | StarWater   | WarehouseFour  |
-                -- | StarWater   | WarehouseThree |
-                -- | StarWater   | WarehouseTwo   |
-                -- | StarWater   | WarehouseOne   |
-                -- | AntiTrauma  | WarehouseSeven |
-                -- | AntiTrauma  | WarehouseSix   |
-                -- | AntiTrauma  | WarehouseFive  |
-                -- | AntiTrauma  | WarehouseFour  |
-                -- | AntiTrauma  | WarehouseThree |
-                -- | AntiTrauma  | WarehouseTwo   |
-                -- | AntiTrauma  | WarehouseOne   |
-                -- | RedLight    | WarehouseSeven |
-                -- | RedLight    | WarehouseSix   |
-                -- | RedLight    | WarehouseFive  |
-                -- | RedLight    | WarehouseFour  |
-                -- | RedLight    | WarehouseThree |
-                -- | RedLight    | WarehouseTwo   |
-                -- | RedLight    | WarehouseOne   |
-                -- | ClassFoster | WarehouseSeven |
-                -- | ClassFoster | WarehouseSix   |
-                -- | ClassFoster | WarehouseFive  |
-                -- | ClassFoster | WarehouseFour  |
-                -- | ClassFoster | WarehouseThree |
-                -- | ClassFoster | WarehouseTwo   |
-                -- | ClassFoster | WarehouseOne   |
-                -- +-------------+----------------+
+                -- +-------------+--------------+
+                -- | Name        | Name         |
+                -- +-------------+--------------+
+                -- | Tealoz Duo  | StorageSeven |
+                -- | Tealoz Duo  | StorageSix   |
+                -- | Tealoz Duo  | StorageFive  |
+                -- | Tealoz Duo  | StorageFour  |
+                -- | Tealoz Duo  | StorageThree |
+                -- | Tealoz Duo  | StorageTwo   |
+                -- | Tealoz Duo  | StorageOne   |
+                -- | PanzerLac   | StorageSeven |
+                -- | PanzerLac   | StorageSix   |
+                -- | PanzerLac   | StorageFive  |
+                -- | PanzerLac   | StorageFour  |
+                -- | PanzerLac   | StorageThree |
+                -- | PanzerLac   | StorageTwo   |
+                -- | PanzerLac   | StorageOne   |
+                -- | Laplas      | StorageSeven |
+                -- | Laplas      | StorageSix   |
+                -- | Laplas      | StorageFive  |
+                -- | Laplas      | StorageFour  |
+                -- | Laplas      | StorageThree |
+                -- | Laplas      | StorageTwo   |
+                -- | Laplas      | StorageOne   |
+                -- | Riamot      | StorageSeven |
+                -- | Riamot      | StorageSix   |
+                -- | Riamot      | StorageFive  |
+                -- | Riamot      | StorageFour  |
+                -- | Riamot      | StorageThree |
+                -- | Riamot      | StorageTwo   |
+                -- | Riamot      | StorageOne   |
+                -- | Macert      | StorageSeven |
+                -- | Macert      | StorageSix   |
+                -- | Macert      | StorageFive  |
+                -- | Macert      | StorageFour  |
+                -- | Macert      | StorageThree |
+                -- | Macert      | StorageTwo   |
+                -- | Macert      | StorageOne   |
+                -- | APlus       | StorageSeven |
+                -- | APlus       | StorageSix   |
+                -- | APlus       | StorageFive  |
+                -- | APlus       | StorageFour  |
+                -- | APlus       | StorageThree |
+                -- | APlus       | StorageTwo   |
+                -- | APlus       | StorageOne   |
+                -- | StarWater   | StorageSeven |
+                -- | StarWater   | StorageSix   |
+                -- | StarWater   | StorageFive  |
+                -- | StarWater   | StorageFour  |
+                -- | StarWater   | StorageThree |
+                -- | StarWater   | StorageTwo   |
+                -- | StarWater   | StorageOne   |
+                -- | AntiTrauma  | StorageSeven |
+                -- | AntiTrauma  | StorageSix   |
+                -- | AntiTrauma  | StorageFive  |
+                -- | AntiTrauma  | StorageFour  |
+                -- | AntiTrauma  | StorageThree |
+                -- | AntiTrauma  | StorageTwo   |
+                -- | AntiTrauma  | StorageOne   |
+                -- | RedLight    | StorageSeven |
+                -- | RedLight    | StorageSix   |
+                -- | RedLight    | StorageFive  |
+                -- | RedLight    | StorageFour  |
+                -- | RedLight    | StorageThree |
+                -- | RedLight    | StorageTwo   |
+                -- | RedLight    | StorageOne   |
+                -- | ClassFoster | StorageSeven |
+                -- | ClassFoster | StorageSix   |
+                -- | ClassFoster | StorageFive  |
+                -- | ClassFoster | StorageFour  |
+                -- | ClassFoster | StorageThree |
+                -- | ClassFoster | StorageTwo   |
+                -- | ClassFoster | StorageOne   |
+                -- +-------------+--------------+
+
 
 -- 		d. З’єднання декількох таблиць за рівністю
             
-            -- Знаходимо, ліки, у яких спосіб приготування однаковий між собою
+            -- Опис:
+                -- Знаходимо, ліки, у яких спосіб приготування однаковий між собою
 
                 SELECT
                     Medicine.Name,
@@ -714,8 +767,11 @@
                 -- +-------------+-------------+---------------+
 
 -- 		e. З’єднання декількох таблиць за рівністю та умовою відбору
-
-            -- Те саме, але додаємо умову, що не має співпадати ім'я'
+            
+            -- Опис:
+                -- Визначимо усі можливі пари ЛІКИ - СКЛАД,
+                -- де у результаті ім'я в парах не має співпадати,
+                -- тобто не буде рядка "AAA AAA 2" 
 
     			SELECT
                     Medicine.Name,
@@ -754,7 +810,8 @@
 
 -- 		f. Внутрішнього з’єднання
 
-            -- Визначимо пари ліки - сховища
+            -- Опис:
+                -- Визначимо на яких складах знаходяться ліки
 
     			SELECT
                     Medicine.Name,
@@ -784,7 +841,10 @@
 
 -- 		g. Лівого зовнішнього з’єднання
 
-                -- Визначимо пари ліки - сховища, при чому покажемо, які ліки не мають сховищ ( тобто вони в дефіциті чи відсутні )
+            -- Опис:
+                -- Визначимо пари у яких складах знаходяться ліки,
+                -- при чому покажемо, які ліки не мають сховищ
+                -- ( тобто вони в дефіциті чи відсутні )
 
     			SELECT
                     Medicine.Name,
@@ -820,7 +880,9 @@
 
 -- 		h. Правого зовнішнього з’єднання
 
-            -- Визначимо пари ліки - сховища, при чому покажемо, сховища пустують
+            -- Опис:
+                -- Визначимо пари у яких складах знаходяться ліки,
+                -- при чому покажемо, які сховища пустують
 
     			SELECT
                     Medicine.Name,
@@ -852,7 +914,8 @@
 
 -- 		i. Об’єднання запитів
 
-            -- Оберемо сукупність усіх ліків, складів та сховищ
+            -- Опис:
+                -- Оберемо сукупність усіх ліків, складів та сховищ
 
                 SELECT Name AS name FROM Medicine
                 UNION

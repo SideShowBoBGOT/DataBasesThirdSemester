@@ -1,0 +1,224 @@
+-- Лабораторна робота № 5. Основи програмування з використанням мови SQL. Збережені процедури. Курсори. Створення, програмування та керування тригерами.
+--
+--          Виконавець: ІП-11 Панченко Сергій
+--          Варіант: 23
+--
+--            Мета:          * Вивчити правила побудови ідентифікаторів, правила визначення змінних
+                          --       та типів. Визначити правила роботи з циклами та умовними
+                          --       конструкціями, роботу зі змінними типу Table.
+
+                          -- * Вивчити синтаксис та семантику функцій та збережених процедур,
+                          --       способів їх ідентифікації, методів визначення та специфікації параметрів
+                          --       та повертаємих значень, виклик функцій та збережених процедур.
+
+                          -- * Застосування команд для створення, зміни та видалення як скалярних, так
+                          --       і табличних функцій, збережених процедур.
+
+                          -- * Вивчити призначення та типи курсорів, синтаксис та семантику команд
+                          --       мови SQL для створення курсорів, вибірки даних з курсорів, зміни даних
+                          --       із застосуванням курсорів.
+
+                          -- * Вивчити призначення та типи тригерів, умов їх активації, синтаксису та
+                          --       семантики для їх створення, модифікації, перейменування, програмування
+                          --       та видалення.
+--
+--                Програмне забезпечення аптеки. Аптека продає медикаменти і
+--                виготовляє їх за рецептами. Ліки можуть бути різних типів:
+--                a. готові ліки: таблетки, мазі, настоянки;
+--                b. виготовлені аптекою: мікстури, мазі, розчини, настойки, порошки.
+--                Різниця в типах ліків відображається в різному наборі атрибутів, що їх
+--                характеризують. В аптеці існує довідник технологій приготування різних
+--                ліків. У ньому вказуються: ідентифікаційний номер технології, назву ліків
+--                і сам спосіб приготування. На складі на всі медикаменти встановлюється
+--                критична норма, тобто коли будь-яких препаратів на складі менше
+--                критичної норми, то складаються заявки на них і їх в терміновому
+--                порядку привозять з оптових складів медикаментів. Для виготовлення
+--                аптекою ліків хворий повинен принести рецепт від лікаря. У рецепті
+--                повинно бути вказано: ПІБ, підпис і печатка лікаря, ПІБ, вік та діагноз
+--                пацієнта, також кількість ліків і спосіб застосування. Хворий віддаєрецепт реєстратору, він приймає замовлення і дивиться, чи все є в
+--                наявності. Якщо не всі ліки є в наявності, такий хворий поповнює
+--                довідник замовлень з позначкою, що не всі компоненти є для замовлення.
+--                Якщо всі компоненти є, то вони резервуються для хворого. Покупець
+--                сплачує ціну ліків, йому повертається рецепт з позначкою про час
+--                виготовлення. У призначений час хворий приходить і за тим самим
+--                рецептом отримує готове ліки. Такий хворий поповнює список відданих
+--                замовлень. Ведеться статистика за обсягами використовуваних
+--                медикаментів.
+
+-- 0) Створимо таблиці та заповнимо їх данними:
+
+    CREATE DATABASE LabFive;
+    USE LabFive;
+
+    CREATE TABLE PreparationType (
+        PreparationID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        CONSTRAINT PreparationID PRIMARY KEY (PreparationID)
+    );
+    CREATE TABLE Medicine ( 
+        MedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        TotalBought INT UNSIGNED,
+        TotalQuantity INT UNSIGNED NOT NULL,
+        CriticalQuantity INT UNSIGNED NOT NULL,
+        PreparationID INT UNSIGNED NOT NULL,
+        CONSTRAINT MedicineID PRIMARY KEY (MedicineID),
+        CONSTRAINT MedicineForeignPreparation FOREIGN KEY (PreparationID) REFERENCES PreparationType (PreparationID) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+    CREATE TABLE Storage (
+        StorageID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        CONSTRAINT StorageID PRIMARY KEY (StorageID)
+    );
+    CREATE TABLE StorageMedicine (
+        StorageMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        StorageID INT UNSIGNED NOT NULL,
+        MedicineID INT UNSIGNED NOT NULL,
+        CONSTRAINT StorageMedicineID PRIMARY KEY (StorageMedicineID),
+        CONSTRAINT StorageMedicineForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT StorageMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+    CREATE TABLE Warehouse (
+        WarehouseID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        Name VARCHAR(40) NOT NULL,
+        CONSTRAINT WarehouseID PRIMARY KEY (WarehouseID)
+    );
+    CREATE TABLE WarehouseRequest (
+        WarehouseRequestID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        MedicineID INT UNSIGNED NOT NULL,
+        StorageID INT UNSIGNED NOT NULL,
+        WarehouseID INT UNSIGNED NOT NULL,
+        CONSTRAINT WarehouseRequestID PRIMARY KEY (WarehouseRequestID),
+        CONSTRAINT WarehouseRequestForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT WarehouseRequestForeignStorage FOREIGN KEY (StorageID) REFERENCES Storage (StorageID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT WarehouseRequestForeignWarehouse FOREIGN KEY (WarehouseID) REFERENCES Warehouse (WarehouseID) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+    CREATE TABLE Orders (
+        OrdersID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        DoctorFullName VARCHAR(40) NOT NULL,
+        DoctorCode INT UNSIGNED NOT NULL,
+        TypeOfUse VARCHAR(40) NOT NULL,
+        PacientFullName VARCHAR(40) NOT NULL,
+        PacientAge TINYINT UNSIGNED NOT NULL,
+        NumberOfMedicine SMALLINT UNSIGNED NOT NULL,
+        PreparationDate DATETIME NOT NULL,
+        Price FLOAT(8, 2) UNSIGNED NOT NULL,
+        CONSTRAINT OrdersID PRIMARY KEY (OrdersID)
+    );
+    CREATE TABLE OrdersMedicine (
+        OrdersMedicineID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+        IsReserved BOOL NOT NULL,
+        OrdersID INT UNSIGNED NOT NULL,
+        MedicineID INT UNSIGNED NOT NULL,
+        CONSTRAINT OrdersMedicineID PRIMARY KEY (OrdersMedicineID),
+        CONSTRAINT OrdersMedicineForeignMedicine FOREIGN KEY (MedicineID) REFERENCES Medicine (MedicineID) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT OrdersMedicineForeignOrders FOREIGN KEY (OrdersID) REFERENCES Orders (OrdersID) ON DELETE CASCADE ON UPDATE CASCADE
+    );  
+
+    -- Заповнимо таблицю рядками:
+    INSERT INTO PreparationType (Name) VALUES ("Carbonization");
+    INSERT INTO PreparationType (Name) VALUES ("Cancerezation");
+    INSERT INTO PreparationType (Name) VALUES ("Pressuring");
+    INSERT INTO PreparationType (Name) VALUES ("Solarization");
+
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Tealoz Duo", 4, 35, 2, 2);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("PanzerLac", 23, 120, 19, 4);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Laplas", 4, 50, 2, 3);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Riamot", 9, 40, 12, 2);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("Macert", 9, 70, 15, 1);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("APlus", NULL, 45, 5, 3);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("StarWater", NULL, 87, 4, 4);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("AntiTrauma", 2, 7, 4, 1);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("RedLight", 2, 5, 4, 1);
+    INSERT INTO Medicine (Name, TotalBought, TotalQuantity, CriticalQuantity, PreparationID) VALUES ("ClassFoster", 2, 9, 4, 1);
+
+    INSERT INTO Storage (Name) VALUES ("StorageOne");
+    INSERT INTO Storage (Name) VALUES ("StorageTwo");
+    INSERT INTO Storage (Name) VALUES ("StorageThree");
+    INSERT INTO Storage (Name) VALUES ("StorageFour");
+    INSERT INTO Storage (Name) VALUES ("StorageFive");
+    INSERT INTO Storage (Name) VALUES ("StorageSix");
+    INSERT INTO Storage (Name) VALUES ("StorageSeven");
+
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (1, 4);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (2, 2);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 3);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 7);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (3, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 2);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (4, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (5, 4);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 2);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 6);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (6, 5);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 1);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 3);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 5);
+    INSERT INTO StorageMedicine (StorageID, MedicineID) VALUES (7, 4);
+
+
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseOne');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseTwo');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseThree');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseFour');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseFive');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseSix');
+    INSERT INTO Warehouse (Name) VALUES ('WarehouseSeven');
+
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (1, 1, 1);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 1);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 2, 2);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 1, 1);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 3, 4);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (2, 1, 3);
+    INSERT INTO WarehouseRequest (MedicineID, StorageID, WarehouseID) VALUES (3, 3, 3);
+                     
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Tyler Durden", 2217854, "Drinking", "The Narrator", 30, 1, '2022-10-22 14:00:00', 180.56);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Saul Goodman", 20082013, "Chewing", "Walter White", 50, 5, '2022-11-23 18:30:00', 503.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Trevis Bickle", 4322013, "Snoring", "Betsy White", 20, 15, '2022-01-23 19:30:00', 503.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Mario Mario", 82013, "Sniffing", "Luigi Mario", 50, 5, '2022-11-11 20:30:00', 102.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Robocop", 20082013, "Sucking", "Terminator", 50, 5, '2022-04-19 21:30:00', 503.45);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Serhii Panchenko", 666666, "Formalizing", "Natalia Cegla", 18, 81, '2022-04-19 21:30:00', 503.99);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Yurii Riabov", 101010101, "Animezation", "Vlad Golovatuk", 19, 21, '2022-11-30 19:20:00', 108.56);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Dmytro Tarasonok", 1234567, "Cabanizaton", "Vano Sheet", 20, 11, '2022-11-29 22:40:00', 73.34);
+    INSERT INTO Orders (DoctorFullName, DoctorCode, TypeOfUse, PacientFullName, PacientAge, NumberOfMedicine, PreparationDate, Price) VALUES ("Kyrylo Sidak", 666999, "Pythonization", "Kipish SMS", 6, 13, '2022-04-19 21:30:00', 13.11);
+
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 1, 1);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 1, 2);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 3, 4);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (1, 4, 5);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 1, 6);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 7, 2);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 2, 3);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 3, 5);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 5, 4);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 4, 1);
+    INSERT INTO OrdersMedicine (IsReserved, OrdersID, MedicineID) VALUES (0, 4, 6);
+
+
+-- Постановка задачі лабораторної робота № 5
+-- При виконанні лабораторної роботи необхідно виконати наступні дії:
+-- 1) Збережені процедури:
+-- a. запит для створення тимчасової таблиці через змінну типу TABLE;
+-- b. запит з використанням умовної конструкції IF;
+-- c. запит з використанням циклу WHILE;
+-- d. створення процедури без параметрів;
+-- e. створення процедури з вхідним параметром;
+-- f. створення процедури з вхідним параметром та RETURN;
+-- g. створення процедури оновлення даних в деякій таблиці БД;
+-- h. створення процедури, в котрій робиться вибірка даних.
+-- 2) Функції:
+-- a. створити функцію, котра повертає деяке скалярне значення;
+-- b. створити функцію, котра повертає таблицю з динамічним набором
+-- стовпців;
+-- c. створити функцію, котра повертає таблицю заданої структури.
+-- 3) Робота з курсорами:
+-- a. створити курсор;
+-- b. відкрити курсор;
+-- c. вибірка даних, робота з курсорами.
+-- 4) Робота з тригерами:
+-- a. створити тригер, котрий буде спрацьовувати при видаленні даних;
+-- b. створити тригер, котрий буде спрацьовувати при модифікації даних;
+-- c. створити тригер, котрий буде спрацьовувати при додаванні даних.
