@@ -1,0 +1,11 @@
+INSERT INTO player_role VALUES (default, 'Goalkeeper');
+INSERT INTO player_role VALUES (default, 'Right Fullback');
+INSERT INTO player_role VALUES (default, 'Left Fullback');
+INSERT INTO player_role VALUES (default, 'Center Fullback');
+INSERT INTO player_role VALUES (default, 'Sweeper');
+INSERT INTO player_role VALUES (default, 'Defending Midfielder');
+INSERT INTO player_role VALUES (default, 'Left Midfielder');
+INSERT INTO player_role VALUES (default, 'Right Midfielder');
+INSERT INTO player_role VALUES (default, 'Center Midfielder');
+INSERT INTO player_role VALUES (default, 'Attacking Midfielder');
+INSERT INTO player_role VALUES (default, 'Striker');

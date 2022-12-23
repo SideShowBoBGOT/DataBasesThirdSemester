@@ -1,0 +1,3 @@
+/home/choleraplague/university/DBThirdSemester/course_work/untitled/cmake-build-debug/CMakeFiles/untitled.dir
+/home/choleraplague/university/DBThirdSemester/course_work/untitled/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/choleraplague/university/DBThirdSemester/course_work/untitled/cmake-build-debug/CMakeFiles/rebuild_cache.dir
