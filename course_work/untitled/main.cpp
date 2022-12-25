@@ -437,7 +437,7 @@ void createAction() {
 		
 		auto yellowCounter = 0;
 		for(auto i=0;i<num;++i) {
-			auto stype = RNG(1, 5);
+			auto stype = RNG(1, 6);
 			if(stype==1 || stype==2) {
 				yellowCounter++;
 			}

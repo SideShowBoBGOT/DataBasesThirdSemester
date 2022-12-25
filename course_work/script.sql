@@ -148,15 +148,16 @@ ON UPDATE CASCADE ON DELETE RESTRICT;
 
 -- awk 'BEGIN{FS=OFS=","}NR<=1560{print NR,$1}' namesSurnames.txt
 
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/country.csv' '/tmp/country.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/city.csv' '/tmp/city.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/stadium.csv' '/tmp/stadium.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/team.csv' '/tmp/team.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/trainer.csv' '/tmp/trainer.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/player_role.sql' '/tmp/player_role.sql'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/player.csv' '/tmp/player.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/match.csv' '/tmp/match.csv'
-cp '/home/choleraplague/university/DBThirdSemester/course_work/data/action_type.sql' '/tmp/action_type.sql'
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/country.csv' '/tmp/country.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/city.csv' '/tmp/city.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/stadium.csv' '/tmp/stadium.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/team.csv' '/tmp/team.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/trainer.csv' '/tmp/trainer.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/player_role.sql' '/tmp/player_role.sql' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/player.csv' '/tmp/player.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/referee.csv' '/tmp/referee.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/match.csv' '/tmp/match.csv' &&
+cp '/home/choleraplague/university/DBThirdSemester/course_work/data/action_type.sql' '/tmp/action_type.sql' &&
 cp '/home/choleraplague/university/DBThirdSemester/course_work/data/action.csv' '/tmp/action.csv'
 
 
@@ -171,6 +172,615 @@ psql -h localhost -d course_work -f '/tmp/player_role.sql'
 \copy match FROM '/tmp/match.csv' DELIMITER ',' CSV;
 psql -h localhost -d course_work -f '/tmp/action_type.sql'
 \copy action FROM '/tmp/action.csv' DELIMITER ',' CSV;
+
+
+--SQL Queries
+
+-- ------------------------------------------------------------------------
+-- 1) Action time trigger
+CREATE FUNCTION check_action_match()
+		RETURNS TRIGGER
+	AS $$
+	DECLARE
+		fts timestamp;
+		fte timestamp;
+		sts timestamp;
+		ste timestamp;
+		iet BOOL;
+		ets timestamp;
+		ete timestamp;
+		t_one INT;
+		t_two INT;
+	BEGIN
+		SELECT
+			first_time_start,
+			first_time_end,
+			second_time_start,
+			second_time_end,
+			is_extra_time,
+			extra_time_start,
+			extra_time_end,
+			first_team_id,
+			second_team_id
+		INTO
+			fts,
+			fte,
+			sts,
+			ste,
+			iet,
+			ets,
+			ete,
+			t_one,
+			t_two
+		FROM
+			match
+		WHERE
+			match.id = NEW.match_id;
+		IF NOT ( NEW.action_time BETWEEN fts AND fte
+				 OR NEW.action_time BETWEEN sts AND ste
+				 OR ( iet AND NEW.action_time BETWEEN ets AND ete ) 
+		)
+		THEN
+			RAISE EXCEPTION 'Action time is not in right borders';
+		END IF;
+
+		IF NOT ( NEW.player_id IN (SELECT id FROM player WHERE player.team_id = t_one)
+			OR NEW.player_id IN (SELECT id FROM player WHERE player.team_id = t_two) 
+		)
+		THEN
+			RAISE EXCEPTION 'Player does not belong to either team';
+		END IF;
+		RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER check_action_match_trigger
+	BEFORE INSERT OR UPDATE
+ON action
+FOR EACH ROW
+	EXECUTE PROCEDURE check_action_match();
+
+SELECT
+	id,
+	first_time_start as fts,
+	first_time_end as fte,
+	second_time_start as sts,
+	second_time_end as ste,
+	is_extra_time as iet,
+	extra_time_start as ets,
+	extra_time_end as ete,
+	first_team_id as t_one,
+	second_team_id as t_two
+FROM
+	match
+LIMIT 1;
+
+--  id |         fts         |         fte         |         sts         |         ste         | iet |         ets         |         ete         | t_one | t_two 
+-- ----+---------------------+---------------------+---------------------+---------------------+-----+---------------------+---------------------+-------+-------
+--   1 | 2018-10-16 04:52:41 | 2018-10-16 05:37:41 | 2018-10-16 05:52:41 | 2018-10-16 06:37:41 | t   | 2018-10-16 06:52:41 | 2018-10-16 07:22:41 |   836 |   148
+
+	SELECT id, name, team_id FROM player WHERE team_id = 836;
+-- 	  id   |         name          | team_id 
+-- -------+-----------------------+---------
+--  10365 | Sisinia Elansky       |     836
+--  10366 | Yosef Wolffsen        |     836
+--  10367 | Iosune Lasheras       |     836
+--  10368 | Casiano Travesedo     |     836
+--  10369 | Assunta Asturias      |     836
+--  10370 | Conceso Cousido       |     836
+--  10371 | Eimantas Izusquieta   |     836
+--  10372 | Montserrat Cabalhanas |     836
+--  10373 | Houssam Uggias        |     836
+--  10374 | Alejos Luessen        |     836
+--  10375 | Grisha Esquer         |     836
+	
+--	DROP FUNCTION check_action_match CASCADE;
+
+
+	INSERT INTO action VALUES (default,'2018-10-16 04:52:42', 'sdsdsdsd', 1, 10333, 1);
+
+
+
+
+-- ------------------------------------------------------------------------
+
+-- 2)
+
+CREATE FUNCTION yellow_card()
+	RETURNS TRIGGER
+	AS $$
+	DECLARE
+		counter INT;
+	BEGIN
+		IF NEW.action_type_id = 1
+		THEN
+			SELECT
+				COUNT(*)
+			INTO
+				counter
+			FROM
+				action
+			WHERE
+				action_type_id = 1
+				AND player_id = NEW.player_id
+				AND match_id = NEW.match_id;
+
+			IF counter + 1 > 2
+			THEN
+				RAISE EXCEPTION 'Player can not be given with more than two yellow cards';
+			END IF;
+		END IF;
+		RETURN NEW;
+	END;
+	$$
+	LANGUAGE plpgsql;
+
+CREATE TRIGGER yellow_card_trigger
+		BEFORE INSERT
+	ON action
+	FOR EACH ROW
+		EXECUTE PROCEDURE yellow_card();
+
+
+DROP FUNCTION yellow_card CASCADE;
+
+INSERT INTO action VALUES (1000005,'2018-10-16 04:52:42', 'sdsdsdsd', 1, 10367, 1);
+INSERT INTO action VALUES (1000006,'2018-10-16 04:53:42', 'sdsdsdsd', 1, 10367, 1);
+INSERT INTO action VALUES (1000007,'2018-10-16 04:53:42', 'sdsdsdsd', 1, 10367, 1);
+INSERT INTO action VALUES (1000008,'2018-10-16 04:53:42', 'sdsdsdsd', 1, 10367, 1);
+
+
+SELECT COUNT(*) FROM action WHERE action_type_id = 1 AND player_id = 10366 AND match_id = 1;
+
+-- 3)
+CREATE FUNCTION red_card()
+	RETURNS TRIGGER
+	AS $$
+	DECLARE
+		counter INT;
+	BEGIN
+		IF NEW.action_type_id = 1
+		THEN
+			SELECT
+				COUNT(*)
+			INTO
+				counter
+			FROM
+				action
+			WHERE
+				action_type_id = 1
+				AND player_id = NEW.player_id
+				AND match_id = NEW.match_id;
+
+			IF counter = 2
+			THEN
+				INSERT INTO
+					action
+				VALUES (
+					NEW.id + 1,
+					NEW.action_time,
+					NEW.reason,
+					2,
+					NEW.player_id,
+					NEW.match_id
+				);
+
+				RAISE NOTICE 'Inserted red card';
+			END IF;
+		END IF;
+		RETURN NEW;
+	END;
+	$$
+	LANGUAGE plpgsql;
+
+CREATE TRIGGER red_card_trigger
+		AFTER INSERT
+	ON action
+	FOR EACH ROW
+		EXECUTE PROCEDURE red_card();
+
+DROP FUNCTION red_card CASCADE;
+
+INSERT INTO action VALUES (1000009,'2018-10-16 04:52:42', 'sdsdsdsd', 1, 10368, 1);
+INSERT INTO action VALUES (1000010,'2018-10-16 04:53:42', 'sdsdsdsd', 1, 10368, 1);
+INSERT INTO action VALUES (1000011,'2018-10-16 04:53:42', 'sdsdsdsd', 1, 10368, 1);
+INSERT INTO action VALUES (1000012,'2018-10-16 04:53:42', 'sdsdsdsd', 1, 10368, 1);
+
+SELECT action.id, action_type.name, player.name FROM action
+INNER JOIN player ON player.id = action.player_id
+INNER JOIN action_type ON action_type.id = action.action_type_id
+WHERE action.player_id = 10368 AND action.match_id = 1;
+
+-- 4)
+
+CREATE FUNCTION red_card_out()
+	RETURNS TRIGGER
+	AS $$
+	DECLARE
+		counter INT;
+	BEGIN
+		IF NEW.action_type_id = 2
+		THEN
+			INSERT INTO
+				action
+			VALUES (
+				NEW.id + 1,
+				NEW.action_time,
+				NEW.reason,
+				4,
+				NEW.player_id,
+				NEW.match_id
+			);
+
+			RAISE NOTICE 'Player Out';
+		END IF;
+		RETURN NEW;
+	END;
+	$$
+	LANGUAGE plpgsql;
+
+CREATE TRIGGER red_card_out_trigger
+		AFTER INSERT
+	ON action
+	FOR EACH ROW
+		EXECUTE PROCEDURE red_card_out();
+
+
+INSERT INTO action VALUES (1000017,'2018-10-16 04:53:42', 'Rude Language', 2, 10369, 1);
+
+SELECT action.id, action_type.name, player.name FROM action
+INNER JOIN player ON player.id = action.player_id
+INNER JOIN action_type ON action_type.id = action.action_type_id
+WHERE action.player_id = 10369 AND action.match_id = 1;
+
+--5) 
+
+CREATE FUNCTION border_player_team()
+	RETURNS TRIGGER
+	AS $$
+	DECLARE 
+		counter INT;
+	BEGIN
+		SELECT COUNT(*) INTO counter FROM player
+		WHERE team_id = NEW.team_id AND is_substitute = NEW.is_substitute;
+
+		IF NEW.is_substitute AND counter >=7
+			THEN RAISE EXCEPTION 'Number of substitute players can not be higher than 7';
+		ELSIF counter >=11
+			THEN RAISE EXCEPTION 'Number of regular players can not be higher than 11';
+		END IF;
+		RETURN NEW;
+	END;
+	$$
+	LANGUAGE plpgsql;
+
+CREATE TRIGGER border_player_team_trigger
+		BEFORE INSERT OR UPDATE
+	ON player
+	FOR EACH ROW
+		EXECUTE PROCEDURE border_player_team();
+
+DROP FUNCTION border_player_team CASCADE;
+
+INSERT INTO player VALUES (20000, 836, 'AAA BBB', 6, 22, true);
+INSERT INTO player VALUES (20001, 836, 'CCC DDD', 7, 22, true);
+INSERT INTO player VALUES (20002, 836, 'EEE FFF', 8, 22, true);
+INSERT INTO player VALUES (20003, 836, 'GGG HHH', 9, 22, true);
+INSERT INTO player VALUES (20004, 836, 'XXX YYY', 9, 22, true);
+INSERT INTO player VALUES (20005, 836, 'MMM NNN', 9, 22, true);
+INSERT INTO player VALUES (20006, 836, 'OOO PPP', 2, 22, true);
+
+
+SELECT COUNT(*) FROM player
+WHERE team_id = 836 AND is_substitute = true;
+
+
+-- 6) Count goals
+
+CREATE OR REPLACE FUNCTION count_goals(mid INT, tid INT)
+	RETURNS INT
+	AS $$
+	DECLARE
+		t_one INT;
+		t_two INT;
+	BEGIN
+		RETURN (
+			SELECT COUNT(*) FROM action
+			INNER JOIN player ON player.id = player_id
+			WHERE action.action_type_id = 6
+			AND action.match_id = mid
+			AND player.team_id = tid
+		);
+	END;
+	$$
+	LANGUAGE plpgsql;
+
+
+SELECT first_team_id, second_team_id FROM match WHERE id = 1;
+
+SELECT action.match_id, action.player_id, player.team_id  FROM action
+INNER JOIN player ON player.id = player_id
+WHERE action.action_type_id = 6
+AND action.match_id = 33560
+AND player.team_id = 736;
+
+
+-- 7) Who won
+
+CREATE OR REPLACE PROCEDURE who_win(mid INT)
+	AS $$
+	DECLARE
+		t_one INT;
+		t_two INT;
+		n_one VARCHAR(40);
+		n_two VARCHAR(40);
+		r_one INT;
+		r_two INT;
+	BEGIN
+		SELECT first_team_id, second_team_id
+		INTO t_one, t_two FROM match WHERE mid = match.id;
+
+		SELECT name INTO n_one FROM team WHERE id = t_one;
+		SELECT name INTO n_two FROM team WHERE id = t_two;
+
+		SELECT win_lose(mid, t_one) INTO r_one;
+		SELECT win_lose(mid, t_two) INTO r_two;
+
+		RAISE NOTICE 'ID: % Name: % %', t_one, n_one, r_one;
+		RAISE NOTICE 'ID: % Name: % %', t_two, n_two, r_two;
+	END;
+	$$
+	LANGUAGE plpgsql;
+
+-- 8) best player
+
+SELECT
+	player.name,
+	total_goals 
+FROM
+	(SELECT
+		player_id,
+		COUNT(goal) AS total_goals
+	FROM 
+		(SELECT
+			player_id,
+			action.action_type_id AS goal	
+		FROM
+			action
+		WHERE
+			action.action_type_id = 6
+		) AS a
+	GROUP BY 
+		player_id 
+	) AS b
+INNER JOIN
+	player
+ON
+	player.id = player_id
+ORDER BY
+	total_goals DESC;
+
+	match;
+--9) Countries by matches
+
+
+SELECT
+	country.name, COUNT(country.name) AS total_accepted
+FROM
+	match
+INNER JOIN
+	stadium
+ON
+	stadium.id = match.stadium_id
+INNER JOIN
+	city
+ON
+	city.id = stadium.city_id
+INNER JOIN
+	country
+ON
+	country.id = city.country_id
+GROUP BY
+	country.name
+ORDER BY
+	total_accepted DESC;
+
+-- 10) 
+
+SELECT
+	referee.name,
+	total_yellow
+FROM
+(
+	SELECT
+		rid,
+		COUNT(rid) AS total_yellow
+	FROM 
+		(	
+			SELECT
+				referee.id AS rid
+			FROM
+				action
+			INNER JOIN
+				match
+			ON
+				match.id = action.match_id
+			INNER JOIN
+				referee
+			ON
+				referee.id = match.referee_id
+			WHERE
+				action.action_type_id = 1
+		) AS a
+	GROUP BY
+		rid
+) AS b
+INNER JOIN
+	referee
+ON
+	b.rid = referee.id
+ORDER BY
+	total_yellow DESC;
+
+-- 11)
+
+SELECT
+	country_name,
+	COUNT(country_name) AS total_goals
+FROM 
+(
+	SELECT
+		country.name AS country_name
+	FROM
+		action
+	INNER JOIN
+		player
+	ON
+		player.id = action.player_id
+	INNER JOIN
+		team
+	ON
+		team.id = player.team_id
+	INNER JOIN
+		country
+	ON
+		team.country_id = country.id
+	WHERE
+		action.action_type_id = 6
+) AS a
+GROUP BY
+	country_name
+ORDER BY
+	total_goals DESC;
+
+-- 12)
+
+SELECT
+	team.id,
+	team.name,
+	ROUND(avg_age, 3) as average_age
+FROM
+(
+	SELECT
+		team_id,
+		AVG(age) as avg_age
+	FROM
+		player
+	GROUP BY
+		team_id
+) AS a
+INNER JOIN
+	team
+ON
+	team.id = team_id
+ORDER BY
+	average_age ASC;
+
+-- 13)
+
+SELECT
+	team.name,
+	trainer.name
+FROM
+	trainer
+INNER JOIN
+	team
+ON
+	team.id = trainer.team_id;
+
+--14) 
+
+	-- DELETE
+	-- FROM
+	-- 	action
+	-- WHERE action.action_type_id = 6
+	-- AND action.action_time - (
+	-- 	SELECT 
+	-- 		first_time_start
+	-- 	FROM
+	-- 		match
+	-- 	WHERE action.match_id = match.id
+	-- 	LIMIT 1
+	-- 	) = '00:00:00' ;
+
+SELECT
+	AVG(m_diff_time) AS avg_time
+FROM
+(
+	SELECT 
+		mid,
+		MIN(diff_time) AS m_diff_time
+	FROM
+	(
+		SELECT
+			match.id as mid,
+			action.action_time - match.first_time_start AS diff_time
+		FROM
+			action
+		INNER JOIN
+			match
+		ON
+			match.id = action.match_id
+		WHERE
+			action.action_type_id = 6
+	) AS a
+	GROUP BY
+		mid
+) AS b;
+
+-- 15)
+	
+	CREATE OR REPLACE FUNCTION win_lose(mid INT, tid INT)
+		RETURNS INT
+		AS $$
+		DECLARE
+			t_one INT;
+			t_two INT;
+			g_one INT;
+			g_two INT;
+			g_cur INT;
+			g_other INT;
+			res INT;
+		BEGIN
+			SELECT first_team_id, second_team_id
+			INTO t_one, t_two FROM match WHERE mid = match.id;
+
+			SELECT count_goals(mid, t_one) INTO g_one;
+			SELECT count_goals(mid, t_two) INTO g_two;
+
+			IF tid = t_one
+			THEN
+				g_cur := g_one;
+				g_other := g_two;
+			ELSE
+				g_cur := g_two;
+				g_other := g_one;
+			END IF;
+
+			IF g_cur > g_other
+			THEN
+				res := 1;
+			ELSIF g_cur = g_other
+			THEN
+				res := 0;
+			ELSE
+				res := -1;
+			END IF;
+
+			RETURN res;
+		END;
+		$$
+		LANGUAGE plpgsql;
+
+--Which team won the biggest 
+
+--16)
+SELECT
+	win_lose(match.id, match.first_team_id)
+FROM
+	match LIMIT 10;
+
 
 
 
