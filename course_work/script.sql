@@ -773,16 +773,86 @@ FROM
 		$$
 		LANGUAGE plpgsql;
 
---Which team won the biggest 
+
 
 --16)
 SELECT
-	win_lose(match.id, match.first_team_id)
+	country.name,
+	city.name,
+	stadium.name
 FROM
-	match LIMIT 10;
+	stadium
+INNER JOIN
+	city
+ON
+	stadium.city_id = city.id
+INNER JOIN
+	country
+ON
+	country.id = city.country_id;
+
+--17)
+
+CREATE VIEW team_trainer AS
+	SELECT
+		team.id AS team_id,
+		team.name AS team_name,
+		trainer.id AS trainer_id,
+		trainer.name AS trainer_name
+	FROM
+		team
+	INNER JOIN
+		trainer
+	ON
+		trainer.team_id = team.id;
+
+-- 18) 
+
+CREATE VIEW player_country AS
+	SELECT
+		player.id AS player_id,
+		player.name AS player_name,
+		country.id AS country_id,
+		country.name AS country_name
+	FROM
+		player
+	INNER JOIN
+		team
+	ON
+		player.team_id = team.id
+	INNER JOIN
+		country
+	ON
+		country.id = team.country_id; 
+
+-- 19)
+
+EXPLAIN ANALYZE
+SELECT
+	action.id,
+	action.action_type_id,
+	action_type.name
+FROM
+	action
+INNER JOIN
+	action_type
+ON
+	action.action_type_id = action_type.id
+ORDER BY
+	action.id DESC;
 
 
+-- 20)
+--Which team won the biggest 
 
+CREATE INDEX player_index ON player (id);
+CREATE INDEX team_index ON team (id);
+CREATE INDEX match_index ON match (id);
+CREATE INDEX action_index ON action (id, action_type_id);
 
+DROP INDEX player_index;
+DROP INDEX team_index;
+DROP INDEX match_index;
+DROP INDEX action_index;
 
 
